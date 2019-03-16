@@ -1,0 +1,77 @@
+body{
+  font-family: 'Comic Sans';
+  background:pink;
+  margin: 0 auto 0 auto;
+  width:100%;
+  text-align:center;
+  margin: 150px 0px 150px 0px;
+}
+
+
+h1{
+  font-size:2em;
+  color:black;
+}
+
+.boxForm{
+  background:white;
+  width:500px;
+  margin: 0 auto 0 auto;
+  padding:0px 0px 70px 0px;
+  border: blue 3px solid;
+}
+
+.email{
+  background:#ecf0f1;
+  border: gray 1px solid;
+  border-bottom: gray 2px solid;
+  padding: 8px;
+  width:250px;
+  color:#AAAAAA;
+  margin-top:10px;
+  border-radius:4px;
+}
+
+.password{
+  border-radius:4px;
+  background:#ecf0f1;
+  border: gray 1px solid;
+  padding: 8px;
+  width:250px;
+  font-size:1em;
+}
+
+.button1{
+  background:green;
+  width:125px;
+  padding-top:5px;
+  padding-bottom:5px;
+  color:white;
+  border-radius:7px;
+  margin-top:20px;
+  margin-bottom:20px;
+  float:left;
+  margin-left:100px;
+}
+
+.button1:hover{
+  background:red;
+}
+
+#button2:hover{
+background:red;
+}
+
+
+#button2{
+  float:left;
+  background:green;
+  width:125px;  padding-top:5px;
+  padding-bottom:5px;
+  color:white;
+  border-radius:7px;
+  margin-top:20px;
+  margin-bottom:20px;
+  margin-left:45px;
+
+}
