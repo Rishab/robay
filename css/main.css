@@ -1,0 +1,84 @@
+
+.capitalize {
+    text-transform: uppercase;
+}
+
+.card-box {
+    border: 1px solid black;
+    border-radius: 15px;
+}
+.card-box-2 {
+    border: 0.75px solid gray;
+    border-radius: 7.5px;
+}
+
+.center {
+    display: block;
+    margin: 0 auto;
+}
+.center-text {
+    text-align: center;
+}
+.center-flex {
+    display: flex;
+    justify-content: center;
+}
+.center-flex-align {
+    display: flex;
+    align-items: center;
+}
+
+.debug {
+    border: 1px solid red;
+}
+
+.margin-down-tiny {
+    margin-bottom: 15px;
+}
+.margin-left-small {
+    margin-left: 18.5%;
+}
+.margin-up {
+    margin-top: 125px;
+}
+.margin-up-tiny {
+    margin-top: 15px;
+}
+
+.pointer:hover {
+    cursor: pointer;
+}
+
+.height-some {
+    min-height: 25px;
+    height: 15vh;
+}
+.height-tiny {
+    min-height: 25px;
+    height: 5vh;
+}
+
+.width-capped-decent {
+    max-width: 750px;
+}
+.width-capped-avg {
+    max-width: 500px;
+}
+.width-capped-small {
+    max-width: 250px;
+}
+.width-full {
+    width: 100%;
+}
+.width-most {
+    width: 75%;
+}
+.width-half {
+    width: 50%;
+}
+.width-some {
+    width: 25%;
+}
+.width-tiny {
+    width: 5%;
+}
