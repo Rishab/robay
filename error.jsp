@@ -16,7 +16,7 @@
     <div class="height-tiny"></div>
 
     <div class="center-flex">
-        <button onclick="location.href='index.html';" class="width-some pointer card-box-2 debug">
+        <button onclick="location.href='index.jsp';" class="width-some pointer card-box-2 debug">
             <h3 class="capitalize">Return Home</h3>
         </button>
     </div>

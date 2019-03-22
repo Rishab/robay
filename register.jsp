@@ -1,3 +1,9 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+<!--Import some libraries that have classes that we need -->
+<%@ page import="java.io.*,java.util.*,java.sql.*"%>
+<%@ page import=" java.util.regex.Pattern"%>
+<%@ page import="javax.servlet.http.*,javax.servlet.*"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,8 +19,13 @@
     <div class="height-tiny"></div>
 
     <div class="center width-most width-capped-decent card-box">
-        <form action="error.html" class="">
+        <form action="createUser.jsp" method =  "post" class="">
             <div class="margin-up-tiny margin-down-tiny margin-left-small">
+                <div class="margin-down-tiny">
+                    <em>Name:</em>
+                    <br>
+                    <input type="text" name="name" class="width-most width-capped-avg">
+                </div>
                 <div class="margin-down-tiny">
                     <em>State your email address</em>
                     <br>
@@ -39,7 +50,7 @@
 
     <div class="height-tiny"></div>
     <div class="center-text">
-        <a href="index.html"><em>Return home</em></a>
+        <a href="index.jsp"><em>Return home</em></a>
     </div>
     <div class="height-some"></div>
     <hr>

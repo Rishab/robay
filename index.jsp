@@ -16,7 +16,7 @@
     <div class="height-tiny"></div>
 
     <div class="center-flex">
-        <button onclick="location.href='register.html';" class="width-some pointer card-box-2">
+        <button onclick="location.href='register.jsp';" class="width-some pointer card-box-2">
             <h3 class="capitalize">Sign Up</h3>
         </button>
         <div class="width-tiny"></div>
