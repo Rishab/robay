@@ -39,7 +39,7 @@
                 <div class="margin-down-tiny">
                     <em>Confirm your password</em>
                     <br>
-                    <input type="password" name="password" class="width-most width-capped-avg">
+                    <input type="password" name="password_confirm" class="width-most width-capped-avg">
                 </div>
             </div>
             <div class="center-flex margin-down-tiny">
