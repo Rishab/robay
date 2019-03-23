@@ -72,9 +72,12 @@
 		window.location.href = "login.jsp";
 	</script>
 	<%
-		con.close();
+	
 		return;
 			}
+			session.setAttribute("name_user", emailResults.getString("name_user"));
+			session.setAttribute("email_addr", emailResults.getString("email_addr"));
+			con.close();
 	%>
 	<script>
 		alert("Login successful.");
