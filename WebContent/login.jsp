@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,7 +15,7 @@
     <div class="height-tiny"></div>
 
     <div class="center width-most width-capped-decent card-box">
-        <form action="error.jsp" class="">
+        <form action="validateLogin.jsp" class="">
             <div class="margin-up-tiny margin-down-tiny margin-left-small">
                 <div class="margin-down-tiny">
                     <em>Email Address</em>

@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-  Account created.
+	Welcome to Robay!
 </body>
 
 </html>

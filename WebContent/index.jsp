@@ -20,7 +20,7 @@
             <h3 class="capitalize">Sign Up</h3>
         </button>
         <div class="width-tiny"></div>
-        <button onclick="location.href='login.html';" class="width-some pointer card-box-2">
+        <button onclick="location.href='login.jsp';" class="width-some pointer card-box-2">
             <h3 class="capitalize">Login</h3>
         </button>
     </div>
