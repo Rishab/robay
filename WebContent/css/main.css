@@ -32,6 +32,11 @@
     border: 1px solid red;
 }
 
+.feedback:hover {
+    cursor: pointer;
+    border: 1px solid green;
+}
+
 .margin-down-tiny {
     margin-bottom: 15px;
 }

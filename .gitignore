@@ -1,2 +1,4 @@
 *.war
 /build/
+keys
+wars
