@@ -43,7 +43,7 @@
                 </div>
             </div>
             <div class="center-flex margin-down-tiny">
-                <input type="submit" value="Register" class="width-some width-capped-small pointer card-box-2">
+                <input type="submit" value="Register" class="width-some width-capped-small pointer card-box-2 feedback">
             </div>
         </form>
     </div>

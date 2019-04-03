@@ -77,6 +77,7 @@
 			}
 			session.setAttribute("name_user", emailResults.getString("name_user"));
 			session.setAttribute("email_addr", emailResults.getString("email_addr"));
+			session.setAttribute("acc_type", emailResults.getString("acc_type"));
 			con.close();
 	%>
 	<script>

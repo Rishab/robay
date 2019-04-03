@@ -28,13 +28,30 @@
     align-items: center;
 }
 
+.color-brown {
+	color: brown;
+}
+.color-red {
+	color: red;
+}
+
 .debug {
     border: 1px solid red;
 }
 
+.feedback {
+	border: 1px solid gray;
+}
+.feedback-red {
+	border: 1px solid brown;
+}
 .feedback:hover {
     cursor: pointer;
     border: 1px solid green;
+}
+.feedback-red:hover {
+    cursor: pointer;
+    border: 1px solid red;
 }
 
 .margin-down-tiny {
