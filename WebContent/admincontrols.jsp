@@ -29,7 +29,7 @@
 			            <h3 class="capitalize">Earnings Page</h3>
 			        </button>
 			    </div>
-			    <div class="center-text margin-up-tiny"><a href="landingPage.jsp">Back to roBay</a></div>
+			    <div class="center-text margin-up-tiny"><a href="landingPage.jsp"><em>Back to roBay</em></a></div>
 			
 			    <div class="height-some"></div>
 			    <hr>

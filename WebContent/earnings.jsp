@@ -21,16 +21,13 @@
 			    <div class="height-tiny"></div>
 			
 			    <div class="center width-most width-capped-decent card-box debug">
-			        <form action="error.jsp" method =  "post" class="">
+			        <form action="generatereport.jsp" method =  "post" class="">
 			            <div class="margin-up-tiny margin-down-tiny margin-left-small">
 			                <div class="margin-down-tiny">
 			                	<br>
 			                	<h3>Toggle these settings to affect what appears on the report</h3>
 			                	<br>
-			                	<input type="checkbox" checked class="items" name="items" value="items" id="items"><label for="items" class="pointer"> Include Reports for Specific Items</label>
-			                	<br>
-			                	<br>
-			                    <em>Count Sales of Robot Type:</em>
+			                    <em>Include Sections Grouped By:</em>
 			                    <br>
 			                    <!--
 			                    <select>
@@ -40,11 +37,11 @@
 									<option value="military">Military</option>
 								</select>
 								-->
-								<input type="checkbox" checked class="pointer" name="personal" value="personal" id="personal"><label for="personal" class="pointer"> Personal</label>
+								<input type="checkbox" checked class="pointer" name="item" value="item" id="item"><label for="item" class="pointer"> Item</label>
 				                <br>
-				                <input type="checkbox" checked class="pointer" name="medical" value="medical" id="medical"><label for="medical" class="pointer"> Medical</label>
+				                <input type="checkbox" checked class="pointer" name="type" value="type" id="type"><label for="type" class="pointer"> Robot Type</label>
 				                <br>
-				                <input type="checkbox" checked class="pointer" name="military" value="military" id="military"><label for="military" class="pointer"> Military</label>
+				                <input type="checkbox" checked class="pointer" name="user" value="user" id="user"><label for="user" class="pointer"> Selling User</label>
 				                <br>
 								<br>
 				                
