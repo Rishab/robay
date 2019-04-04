@@ -21,8 +21,14 @@
 	<%
 		//Get parameters from the search bar on landing.jsp
 		//String searchParams = request.getParameter("query");
-    String sortBy = null;
-    sortBy = request.getParameter("sortBy");
+    String sortBy = "ASC";
+    if(request.getParameter("sortBy") != null){
+      sortBy = request.getParameter("sortBy");
+    }
+    int numResults = 1;
+    if(request.getParameter("numResults")!= null){
+      numResults = Integer.parseInt(request.getParameter("numResults"));
+    }
 		try {
 
 			String url = "jdbc:mysql://db-project.cvdxoiqfbf2x.us-east-2.rds.amazonaws.com:3306/RobayProjectSchema";
@@ -34,19 +40,45 @@
 			} else {
 				System.out.println("Failed to connect to the database.");
 			}
+      Statement stmt = con.createStatement();
+      String countItems = "SELECT count(*) FROM Auction";
+      ResultSet countOfItems = stmt.executeQuery(countItems);
+      countOfItems.next();
+      int numItems = countOfItems.getInt("count(*)");
 	%>
   <form action="browsing.jsp">
     <select name="sortBy">
-      <option value="ASC">Price: Ascending</option>
+  <%
+    if(sortBy == null || sortBy.equals("ASC")){
+  %>
+      <option selected = "selected" value="ASC">Price: Ascending</option>
       <option value="DESC">Price: Descending</option>
+  <%
+    }else{
+  %>
+      <option value="ASC">Price: Ascending</option>
+      <option selected = "selected" value="DESC">Price: Descending</option>
+  <%
+    }
+  %>
+    </select>
+    <select name="numResults">
+    <%
+      int[] displayOpts = {1, 5, 10, 20, 50, 100, 200};
+      for(int displayVal : displayOpts){
+        %>
+          <option value= <%=displayVal %> <%= (displayVal == numResults)?"selected":""%>> Show <%=displayVal %> items.</option>
+        <%
+        if(displayVal > numItems){
+          break;
+        }
+      }
+    %>
     </select>
     <input type="submit" value="Submit">
   </form>
-
-  </select>
   </br>
   <%
-    Statement stmt = con.createStatement();
     String retrieveItems = "SELECT * FROM Auction ORDER BY max_bid_amt";
     if(sortBy != null){
       retrieveItems += (" " + sortBy);
@@ -54,7 +86,8 @@
       retrieveItems += (" ASC");
     }
     ResultSet items = stmt.executeQuery(retrieveItems);
-    int numResults = 10;
+
+
     for(int i = 0; i < numResults; i++){
       if(!items.next()){
         break;
@@ -70,6 +103,20 @@
     <%
       }
     }
+    %>
+    <%
+      if(numResults < numItems){
+    %>
+    </br>
+    <form action="browsing.jsp">
+      <input type="text" name = "numResults" value=<%=(numResults+10)%> style="display: none;">
+      <input type="text" name = "sortBy" value=<%=(sortBy)%> style="display: none;">
+      <input type="submit" value="Show More Items &raquo;">
+    </form>
+    <%
+      }
+    %>
+  <%
     return;
   } catch (Exception e) {
   %>
