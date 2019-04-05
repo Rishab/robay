@@ -13,20 +13,15 @@
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-	<div>
-		<h2>
-			<em>Robay Browsing</em>
-		</h2>
-	</div>
 	<%
 		//Get parameters from the search bar on landing.jsp
 		//String searchParams = request.getParameter("query");
     String sortBy = "ASC";
-    if(request.getParameter("sortBy") != null){
+    if(request.getParameter("sortBy") != null && request.getParameter("a_id")!= ""){
       sortBy = request.getParameter("sortBy");
     }
     int numResults = 1;
-    if(request.getParameter("numResults")!= null){
+    if(request.getParameter("numResults")!= null && request.getParameter("a_id")!= ""){
       numResults = Integer.parseInt(request.getParameter("numResults"));
     }
 		try {
@@ -41,11 +36,18 @@
 				System.out.println("Failed to connect to the database.");
 			}
       Statement stmt = con.createStatement();
-      String countItems = "SELECT count(*) FROM Auction";
+      String countItems = "SELECT count(*) FROM Auction WHERE status='open'";
       ResultSet countOfItems = stmt.executeQuery(countItems);
       countOfItems.next();
       int numItems = countOfItems.getInt("count(*)");
 	%>
+
+  <div>
+    <h2>
+      <em>Robay Browsing</em>
+    </h2>
+  </div>
+
   <form action="browsing.jsp">
     <select name="sortBy">
   <%
@@ -79,8 +81,8 @@
   </form>
   </br>
   <%
-    String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, r.pic_url FROM "
-    + "Auction a join Robot r using(robot_id)ORDER BY max_bid_amt");
+    String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url FROM "
+    + "Auction a join Robot r using(robot_id) WHERE a.status = 'open' ORDER BY max_bid_amt");
     if(sortBy != null){
       retrieveItems += (" " + sortBy);
     }else{
@@ -97,20 +99,16 @@
         float maxBidAmt = items.getFloat("max_bid_amt");
         String status = items.getString("status");
         String picURL = items.getString("pic_url");
+        int a_id = items.getInt("a_id");
     %>
-    <!--
-      TO DO: Link item to auction page
-      <a href="register.jsp" style="text-decoration:none; color:black;">
-    -->
+      <a href= <%="auctionItem.jsp?a_id="+ a_id %> style="text-decoration:none; color:black;">
       <div class = "card-box">
         <h2><%= listingName %></h2>
         <img src= <%=picURL%> alt="Robot image missing." style="max-width:200px; max-height:200px;">
-        <p>Max Bid Amount: <%= "$" + String.format("%.2f", maxBidAmt) %> Status: <%= status.toUpperCase() %></p>
+        <p>Max Bid Amount: <%= "$" + String.format("%.2f", maxBidAmt) %></p>
       </div>
       </br>
-    <!--
       </a>
-    -->
     <%
       }
     }
@@ -119,11 +117,9 @@
       if(numResults < numItems){
     %>
     </br>
-    <form action="browsing.jsp">
-      <input type="text" name = "numResults" value=<%=(numResults+10)%> style="display: none;">
-      <input type="text" name = "sortBy" value=<%=(sortBy)%> style="display: none;">
+    <a href= <%=("browsing.jsp?numResults=" +(numResults+10>numItems?numItems:numResults+10) +"&sortBy=" + sortBy)%> style="text-decoration:none; color:black;">
       <input type="submit" value="Show More Items &raquo;">
-    </form>
+    </a>
     <%
       }
     %>
