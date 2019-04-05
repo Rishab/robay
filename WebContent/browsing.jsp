@@ -79,7 +79,8 @@
   </form>
   </br>
   <%
-    String retrieveItems = "SELECT * FROM Auction ORDER BY max_bid_amt";
+    String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, r.pic_url FROM "
+    + "Auction a join Robot r using(robot_id)ORDER BY max_bid_amt");
     if(sortBy != null){
       retrieveItems += (" " + sortBy);
     }else{
@@ -95,11 +96,21 @@
         String listingName  = items.getString("listing_name");
         float maxBidAmt = items.getFloat("max_bid_amt");
         String status = items.getString("status");
+        String picURL = items.getString("pic_url");
     %>
+    <!--
+      TO DO: Link item to auction page
+      <a href="register.jsp" style="text-decoration:none; color:black;">
+    -->
       <div class = "card-box">
         <h2><%= listingName %></h2>
-        <p>Max Bid Amount: <%= maxBidAmt %> Status: <%= status.toUpperCase() %></p>
+        <img src= <%=picURL%> alt="Robot image missing." style="max-width:200px; max-height:200px;">
+        <p>Max Bid Amount: <%= "$" + String.format("%.2f", maxBidAmt) %> Status: <%= status.toUpperCase() %></p>
       </div>
+      </br>
+    <!--
+      </a>
+    -->
     <%
       }
     }
