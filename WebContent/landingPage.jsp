@@ -27,6 +27,25 @@
 	%>
 	Hi
 	<%=name%>, Welcome to Robay!
+
+	<div class="navbar">
+
+		<a href="login.jsp" id="login"> Login </a>
+	
+		<a href="register.jsp" id="signup"> SignUp </a>
+	</div>
+	
+	<div class="search-box">
+	<form action="browsing.jsp" method="post">
+		<input type= "search-text" name="query" placeholder="Type to search">
+		<a class="search-btn" href="#"> </a>
+		<button id="myBtn" 
+		onclick="location.href='browsing.jsp';">Submit</button> 
+
+	</form>
+	</div>
+
+	
 </body>
 
 </html>
