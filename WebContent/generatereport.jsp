@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>roBay: Earnings Page</title>
+<title>roBay: Sales Report</title>
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -67,6 +67,8 @@
 			user = readBox(request.getParameter("user"));
 			best_items = readBox(request.getParameter("best_items"));
 			best_users = readBox(request.getParameter("best_users"));
+			ArrayList<String> top_items = new ArrayList<String>();
+			ArrayList<String> top_users = new ArrayList<String>();
             
             try {
             	
@@ -114,17 +116,20 @@
 						</table>
 				    	
 						<%
-							if (item || type || user) {
-								%>
-									<hr>
-									<h2>Earnings by</h2>
-									
+							if (item || type || user || best_items) {
+								if (item || type || user) {
+									%>
+										<hr>
+										<h2>Sorted by</h2>
 									<%
-										if (item) {					
-											%>
-												<h3><em>Item</em></h3>
-												<table class="earnings-table width-full">
-											<%
+								}
+										if (item || best_items) {		
+											if (item) {
+												%>
+													<h3><em>Items Sold</em></h3>
+													<table class="earnings-table width-full">
+												<%
+											}
 											
 											ResultSet by_items = runQuery("SELECT * FROM Auction WHERE status='closed';", con);
 											
@@ -138,30 +143,36 @@
 												    if (winning_bid_str != null) {
 												    	winning_bid = Float.parseFloat(winning_bid_str);
 												    }
-												    %>									
-														<tr>
-															<td class="left-text">
-																<em><%=listing_name%></em><%=" (Robot ID: " + robot_id + ")"%>
-															</td>
-															<td class="right-text">
-																<em>$</em> <%=winning_bid%>
-															</td>
-														</tr>												    
-												    <%
+												    //TODO insert the listing string into the top_items list
+												    
+												    if (item) {
+													    %>									
+															<tr>
+																<td class="left-text">
+																	<em><%=listing_name%></em><%=" (Robot ID: " + robot_id + ")"%>
+																</td>
+																<td class="right-text">
+																	<em>$</em> <%=winning_bid%>
+																</td>
+															</tr>												    
+													    <%
+												    }
 												}
 											
 											} catch (Exception e) {
 												e.printStackTrace();
 											}
 											
-											%>
-												</table>
-											<%
+											if (item) {
+												%>
+													</table>
+												<%
+											}
 										}
 									
 										if (type) {
 											%>
-												<h3><em>Type</em></h3>
+												<h3><em>Type of Item</em></h3>
 												<table class="earnings-table width-full">
 											<%
 											float total_personal = 0;
@@ -265,11 +276,13 @@
 											<%
 										}
 										
-										if (user) {
-											%>
-												<h3><em>Selling User</em></h3>
-												<table class="earnings-table width-full">
-											<%
+										if (user || best_users) {
+											if (user) {
+												%>
+													<h3><em>Selling User</em></h3>
+													<table class="earnings-table width-full">
+												<%
+											}
 										
 											ResultSet users = runQuery("SELECT u_id, name_user FROM Account;", con);
 											
@@ -303,6 +316,9 @@
 														e.printStackTrace();
 													}
 													
+													// TODO insert the listing String into the top_users list
+													
+													if (user) {
 												    %>									
 															<tr>
 																<td class="left-text">
@@ -313,11 +329,15 @@
 																</td>
 															</tr>
 													<%
+													}
 												}
 											
-											%>
-												</table>
-											<%
+											if (user) {
+											
+												%>
+													</table>
+												<%
+											}
 										}
 									%>
 								<%
@@ -328,7 +348,7 @@
 							if (best_items || best_users) {
 								%>
 									<hr>
-									<h2>Best Sellers</h2>
+									<h2>Best Sellers (Limit 10)</h2>
 									
 									<%
 										if (best_items) {
