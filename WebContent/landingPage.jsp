@@ -27,6 +27,32 @@
 	%>
 	Hi
 	<%=name%>, Welcome to Robay!
+
+	<div class="navbar">
+
+		<a href="login.jsp" id="login"> Login </a>
+	  
+		<a href="register.jsp" id="signup"> SignUp </a>
+
+	</div>
+
+	<div class="search-box">
+		<input type= "search-text" name="" placeholder="Type to search">
+		<a class="search-btn" href="#"> </a>
+		<button id="myBtn" 
+		onclick="location.href='browsing.jsp';">Submit</button> 
+
+	</div>
+
+	<script>
+		var input = document.getElementById("myInput");
+		input.addEventListener("keyup", function(event) {
+  		if (event.keyCode === 13) {
+   			event.preventDefault();
+  			 document.getElementById("myBtn").click();
+  			}
+		});
+	</script>
 </body>
 
 </html>
