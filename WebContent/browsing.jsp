@@ -14,8 +14,10 @@
 </head>
 <body>
 	<%
-		//Get parameters from the search bar on landing.jsp
-		//String searchParams = request.getParameter("query");
+    String query = "";
+    if(request.getParameter("query") != null && request.getParameter("query")!= ""){
+      query = request.getParameter("query");
+    }
     String sortBy = "ASC";
     if(request.getParameter("sortBy") != null && request.getParameter("a_id")!= ""){
       sortBy = request.getParameter("sortBy");
@@ -49,6 +51,7 @@
   </div>
 
   <form action="browsing.jsp">
+    <input type="text" name="query">
     <select name="sortBy">
   <%
     if(sortBy == null || sortBy.equals("ASC")){
@@ -80,14 +83,40 @@
     <input type="submit" value="Submit">
   </form>
   </br>
+	<p>Query is: <%=query%></p>
   <%
-    String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url FROM "
-    + "Auction a join Robot r using(robot_id) WHERE a.status = 'open' ORDER BY max_bid_amt");
-    if(sortBy != null){
-      retrieveItems += (" " + sortBy);
-    }else{
-      retrieveItems += (" ASC");
+    String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url, CONCAT_WS('', a.listing_name, r.production_year, r.mobility_level, r.personality, r.purpose, r.expertise, r.specialty, r.r_type) as descr ");
+		retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.status = 'open' ";
+		retrieveItems += "GROUP BY a.a_id ";
+
+		if(query != "" && query != null){
+			%>
+			<script>
+		    alert("Before splitting");
+		  </script>
+			<%
+      String[] searchParams = query.split(" ");
+			%>
+			<script>
+		    alert("After splitting");
+		  </script>
+			<%
+      retrieveItems += "HAVING (";
+      for(String param : searchParams){
+        retrieveItems+=" descr like \'%"+param+"%\' AND";
+      }
+      retrieveItems = retrieveItems.substring(0, retrieveItems.length()-3);
+      retrieveItems += ")";
     }
+    retrieveItems+= "ORDER BY max_bid_amt ";
+    if(sortBy != null){
+      retrieveItems += sortBy;
+    }else{
+      retrieveItems += "ASC";
+    }
+		%>
+			<p><%=retrieveItems%></p>
+		<%
     ResultSet items = stmt.executeQuery(retrieveItems);
 
 
@@ -111,9 +140,11 @@
       </a>
     <%
       }
-    }
+    }if(numResults == 0){
     %>
+			<p>No such items found. </p>
     <%
+			}
       if(numResults < numItems){
     %>
     </br>
@@ -129,8 +160,9 @@
   %>
   <script>
     alert("Something went wrong. Please try again.");
-    window.location.href = "register.jsp";
+    //window.location.href = "register.jsp";
   </script>
+	<p><%=e%></p>
   <%
     }
   %>
