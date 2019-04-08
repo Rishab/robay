@@ -14,6 +14,15 @@
 </head>
 <body>
 	<%
+		String name_user = (String) session.getAttribute("name_user");
+		if (name_user == null || name_user == "") {
+			%>
+			<script>
+				alert("You need to login to browse");
+				window.location.href = "index.jsp";
+			</script>
+			<%
+		}
     String query = "";
     if(request.getParameter("query") != null && request.getParameter("query")!= ""){
       query = request.getParameter("query");
@@ -90,17 +99,7 @@
 		retrieveItems += "GROUP BY a.a_id ";
 
 		if(query != "" && query != null){
-			%>
-			<script>
-		    alert("Before splitting");
-		  </script>
-			<%
       String[] searchParams = query.split(" ");
-			%>
-			<script>
-		    alert("After splitting");
-		  </script>
-			<%
       retrieveItems += "HAVING (";
       for(String param : searchParams){
         retrieveItems+=" descr like \'%"+param+"%\' AND";
@@ -160,9 +159,8 @@
   %>
   <script>
     alert("Something went wrong. Please try again.");
-    //window.location.href = "register.jsp";
+    window.location.href = "index.jsp";
   </script>
-	<p><%=e%></p>
   <%
     }
   %>
