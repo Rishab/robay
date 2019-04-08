@@ -86,7 +86,7 @@
   </div>
 
   <form action="browsing.jsp">
-    <input type="text" name="query">
+    <input type="text" name="query" value = <%= "\"" + query + "\"" %>>
     <select name="sortBy">
   <%
     if(sortBy == null || sortBy.equals("ASC")){
