@@ -47,11 +47,37 @@
 				System.out.println("Failed to connect to the database.");
 			}
       Statement stmt = con.createStatement();
-      String countItems = "SELECT count(*) FROM Auction WHERE status='open'";
-      ResultSet countOfItems = stmt.executeQuery(countItems);
-      countOfItems.next();
-      int numItems = countOfItems.getInt("count(*)");
-	%>
+
+    String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url, CONCAT_WS('', a.listing_name, r.production_year, r.mobility_level, r.personality, r.purpose, r.expertise, r.specialty, r.r_type) as descr ");
+		retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.status = 'open' ";
+		retrieveItems += "GROUP BY a.a_id ";
+		String[] searchParams = {};
+		if(query != "" && query != null){
+      searchParams = query.split(" ");
+      retrieveItems += "HAVING (";
+      for(String param : searchParams){
+        retrieveItems+=" descr like \'%"+param+"%\' AND";
+      }
+      retrieveItems = retrieveItems.substring(0, retrieveItems.length()-3);
+      retrieveItems += ")";
+    }
+    retrieveItems+= "ORDER BY max_bid_amt ";
+    if(sortBy != null){
+      retrieveItems += sortBy;
+    }else{
+      retrieveItems += "ASC";
+    }
+
+		String countItems = "SELECT count(*) FROM (";
+		countItems+= retrieveItems;
+		countItems+= ") as t1";
+		ResultSet countOfItems = stmt.executeQuery(countItems);
+		countOfItems.next();
+		int numItems = countOfItems.getInt("count(*)");
+
+    ResultSet items = stmt.executeQuery(retrieveItems);
+
+		%>
 
   <div>
     <h2>
@@ -92,32 +118,7 @@
     <input type="submit" value="Submit">
   </form>
   </br>
-	<p>Query is: <%=query%></p>
-  <%
-    String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url, CONCAT_WS('', a.listing_name, r.production_year, r.mobility_level, r.personality, r.purpose, r.expertise, r.specialty, r.r_type) as descr ");
-		retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.status = 'open' ";
-		retrieveItems += "GROUP BY a.a_id ";
-
-		if(query != "" && query != null){
-      String[] searchParams = query.split(" ");
-      retrieveItems += "HAVING (";
-      for(String param : searchParams){
-        retrieveItems+=" descr like \'%"+param+"%\' AND";
-      }
-      retrieveItems = retrieveItems.substring(0, retrieveItems.length()-3);
-      retrieveItems += ")";
-    }
-    retrieveItems+= "ORDER BY max_bid_amt ";
-    if(sortBy != null){
-      retrieveItems += sortBy;
-    }else{
-      retrieveItems += "ASC";
-    }
-		%>
-			<p><%=retrieveItems%></p>
 		<%
-    ResultSet items = stmt.executeQuery(retrieveItems);
-
 
     for(int i = 0; i < numResults; i++){
       if(!items.next()){
@@ -139,15 +140,25 @@
       </a>
     <%
       }
-    }if(numResults == 0){
+    }if(numItems == 0){
     %>
 			<p>No such items found. </p>
     <%
-			}
+		}
       if(numResults < numItems){
+				String moreItemsLink = "browsing.jsp?numResults=" + (numResults+10>numItems?numItems:numResults+10);
+				moreItemsLink += "&sortBy=" + sortBy;
+				if(query != null && query != ""){
+					moreItemsLink+= "&query=";
+					for(String param : searchParams){
+						moreItemsLink += param;
+						moreItemsLink += "+";
+					}
+					moreItemsLink = moreItemsLink.substring(0, moreItemsLink.length()-1);
+				}
     %>
     </br>
-    <a href= <%=("browsing.jsp?numResults=" +(numResults+10>numItems?numItems:numResults+10) +"&sortBy=" + sortBy)%> style="text-decoration:none; color:black;">
+    <a href= <%=moreItemsLink%> style="text-decoration:none; color:black;">
       <input type="submit" value="Show More Items &raquo;">
     </a>
     <%
