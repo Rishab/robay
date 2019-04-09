@@ -35,6 +35,10 @@
     if(request.getParameter("numResults")!= null && request.getParameter("a_id")!= ""){
       numResults = Integer.parseInt(request.getParameter("numResults"));
     }
+		String robotType = "";
+		if(request.getParameter("robotType")!= null && request.getParameter("robotType")!= ""){
+      robotType = request.getParameter("robotType");
+    }
 		try {
 
 			String url = "jdbc:mysql://db-project.cvdxoiqfbf2x.us-east-2.rds.amazonaws.com:3306/RobayProjectSchema";
@@ -48,11 +52,16 @@
 			}
       Statement stmt = con.createStatement();
 
-    String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url, CONCAT_WS('', a.listing_name, r.production_year, r.mobility_level, r.personality, r.purpose, r.expertise, r.specialty, r.r_type) as descr ");
+    String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url, r.r_type, CONCAT_WS('', a.listing_name, r.production_year, r.mobility_level, r.personality, r.purpose, r.expertise, r.specialty, r.r_type) as descr ");
 		retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.status = 'open' ";
+		if(robotType != null && robotType != ""){
+			retrieveItems += "AND r.r_type = '";
+			retrieveItems += robotType;
+			retrieveItems += "' ";
+		}
 		retrieveItems += "GROUP BY a.a_id ";
 		String[] searchParams = {};
-		if(query != "" && query != null){
+		if(query != null && query != ""){
       searchParams = query.split(" ");
       retrieveItems += "HAVING (";
       for(String param : searchParams){
@@ -75,10 +84,21 @@
 		countOfItems.next();
 		int numItems = countOfItems.getInt("count(*)");
 
+		String typesAvailableQuery = "SELECT DISTINCT t1.r_type FROM (";
+		typesAvailableQuery +=retrieveItems;
+		typesAvailableQuery += ") as t1 GROUP BY t1.r_type ORDER BY t1.r_type ASC";
+		ResultSet typesAvailableSet = stmt.executeQuery(typesAvailableQuery);
+
+		ArrayList<String> typesAvailable = new ArrayList<String>();
+		while(typesAvailableSet.next()){
+			typesAvailable.add(typesAvailableSet.getString("r_type"));
+		}
+
+
     ResultSet items = stmt.executeQuery(retrieveItems);
 
 		%>
-
+		<p><%= retrieveItems %></p>
   <div>
     <h2>
       <em>Robay Browsing</em>
@@ -115,6 +135,21 @@
       }
     %>
     </select>
+		<%
+		if(typesAvailable.size() > 0){
+		%>
+			<select name = "robotType">
+			<%
+				for(String type: typesAvailable){
+			%>
+				<option value= <%=type%> <%= (type == robotType)?"selected":""%>><%=type.substring(0, 1).toUpperCase() + type.substring(1)%></option>
+			<%
+			}
+			%>
+			</select>
+		<%
+		}
+		%>
     <input type="submit" value="Submit">
   </form>
   </br>
@@ -155,6 +190,10 @@
 						moreItemsLink += "+";
 					}
 					moreItemsLink = moreItemsLink.substring(0, moreItemsLink.length()-1);
+				}
+				if(robotType != null && robotType != ""){
+					moreItemsLink+= "&robotType=";
+					moreItemsLink+= robotType;
 				}
     %>
     </br>
