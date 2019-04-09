@@ -9,6 +9,29 @@
 </head>
 <body>
 	<%!	
+		private class TopsNode implements Comparable<TopsNode> {
+			float sales;
+			String name;
+			String id;
+			
+			private TopsNode(float sales, String name, String id) {
+				this.sales = sales;
+				this.name = name;
+				this.id = id;
+			}
+			
+			@Override
+		    public int compareTo(TopsNode other) {
+				if (this.sales > other.sales) {
+					return 1;
+				} else if (this.sales == other.sales) {
+					return 0;
+				} else {
+					return -1;
+				}
+		    }
+		}
+		
 		private boolean readBox(String response) {
 			
 			if (response == null) {
@@ -62,13 +85,28 @@
 			// This assumes session is secured by the server and can't be fudged by an end user...
 			
 			boolean item, type, user, best_items, best_users;
+			boolean invalid_threshold = false;
+			int tops_threshold = 5;
 			item = readBox(request.getParameter("item"));
 			type = readBox(request.getParameter("type"));
 			user = readBox(request.getParameter("user"));
 			best_items = readBox(request.getParameter("best_items"));
 			best_users = readBox(request.getParameter("best_users"));
-			ArrayList<String> top_items = new ArrayList<String>();
-			ArrayList<String> top_users = new ArrayList<String>();
+			ArrayList<TopsNode> top_items = new ArrayList<TopsNode>();
+			ArrayList<TopsNode> top_users = new ArrayList<TopsNode>();
+			
+			String tops_threshold_str = request.getParameter("num_tops");
+			
+			try {
+				tops_threshold = Integer.parseInt(tops_threshold_str);
+				
+				if (tops_threshold <= 0 || tops_threshold > 1000) {
+					tops_threshold = 5;
+					invalid_threshold = true;
+				}
+			} catch (NumberFormatException e) {
+				invalid_threshold = true;
+			}
             
             try {
             	
@@ -143,7 +181,8 @@
 												    if (winning_bid_str != null) {
 												    	winning_bid = Float.parseFloat(winning_bid_str);
 												    }
-												    //TODO insert the listing string into the top_items list
+												    
+												    top_items.add(new TopsNode(winning_bid, listing_name, robot_id));
 												    
 												    if (item) {
 													    %>									
@@ -316,7 +355,7 @@
 														e.printStackTrace();
 													}
 													
-													// TODO insert the listing String into the top_users list
+													top_users.add(new TopsNode(user_sales, user_name, user_id));
 													
 													if (user) {
 												    %>									
@@ -348,21 +387,92 @@
 							if (best_items || best_users) {
 								%>
 									<hr>
-									<h2>Best Sellers (Limit 10)</h2>
+									<h2>Best Sellers</h2>
+									<%
+										if (invalid_threshold) {
+											%>
+												<ul><li><small>Threshold: 5 (invalid input; reverted to default)</small></li></ul>
+											<%
+										} else {
+											%>
+												<ul><li><small>Threshold: <%=tops_threshold%></small></li></ul>
+											<%
+										}
+									%>
 									
 									<%
 										if (best_items) {
+											Collections.sort(top_items);
 											%>
 											<h3><em>Top Items</em></h3>
 											
-											<%											
+												<table class="earnings-table width-full">
+													<%
+														boolean enough = true;
+														for (int i = 0; i < tops_threshold; i++) {
+															if (i >= top_items.size()) {
+																enough = false;
+																break;
+															}
+													%>
+															<tr>
+																<td class="left-text">
+																	<em><%=top_items.get(i).name%></em><%=" (Item ID: " + top_items.get(i).id +")"%>
+																</td>
+																<td class="right-text">
+																	<em>$</em> <%=top_items.get(i).sales%>
+																</td>
+															</tr>
+															
+													<%
+														}
+													%>
+															
+												</table>
+											<%
+											
+											if (!enough) {
+												%>
+													<small>* <em>Not enough items on record to reach the chosen threshold</em></small>
+												<%
+											}
 										}
 									
 										if (best_users) {
+											Collections.sort(top_users);
 											%>
 											<h3><em>Top Users</em></h3>
 											
-											<%											
+											<table class="earnings-table width-full">
+													<%
+														boolean enough = true;
+														for (int i = 0; i < tops_threshold; i++) {
+															if (i >= top_users.size()) {
+																enough = false;
+																break;
+															}
+													%>
+															<tr>
+																<td class="left-text">
+																	<em><%=top_users.get(i).name%></em><%=" (User ID: " + top_users.get(i).id +")"%>
+																</td>
+																<td class="right-text">
+																	<em>$</em> <%=top_users.get(i).sales%>
+																</td>
+															</tr>
+															
+													<%
+														}
+													%>
+															
+												</table>
+											<%
+											
+											if (!enough) {
+												%>
+													<small>* <em>Not enough users on record to reach the chosen threshold</em></small>
+												<%
+											}
 										}
 									%>
 								<%
