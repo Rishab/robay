@@ -44,12 +44,29 @@
 				                <input type="checkbox" checked class="pointer" name="user" value="user" id="user"><label for="user" class="pointer"> Selling User</label>
 				                <br>
 								<br>
+								
+								<script>
+				                	function checkCheckboxes() {
+				                		if (!document.getElementById('best_items').checked && !document.getElementById('best_users').checked) {
+				                			document.getElementById('num_tops').disabled = true;
+				                		} else {
+				                			document.getElementById('num_tops').disabled = false;
+				                		}
+				                    }
+				                </script>
 				                
 				                <em>List Best Sellers:</em>
 				                <br>
-				                <input type="checkbox" checked class="pointer" name="best_items" value="best_items" id="best_items"><label for="best_items" class="pointer"> Top Items</label>
+				                <div onclick="checkCheckboxes()">
+					                <input type="checkbox" checked class="pointer" name="best_items" value="best_items" id="best_items"><label for="best_items" class="pointer"> Top Items</label>
+					                <br>
+					                <input type="checkbox" checked class="pointer" name="best_users" value="best_users" id="best_users"><label for="best_users" class="pointer"> Top Users</label>
+				                </div>
+				                <br><br>
+				                Show top <input type="number" class="pointer" name="num_tops" id="num_tops" min="1" max="1000" value="5">
 				                <br>
-				                <input type="checkbox" checked class="pointer" name="best_users" value="best_users" id="best_users"><label for="best_users" class="pointer"> Top Users</label>
+				                <small>* <em>Only used when "Top Items" or "Top Users" is checked</em></small>
+				                <br>
 			                </div>
 
 			                <br>
