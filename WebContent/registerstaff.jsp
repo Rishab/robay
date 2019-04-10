@@ -43,7 +43,7 @@
 			                    <br>
 			                    <input type="password" name="password_confirm" class="width-most width-capped-avg">
 			                </div>
-			                <em>* Note: Staff's password can be changed later</em>
+			                <em>* Note: Staff can change their password later</em>
 			                <br>
 			            </div>
 			            <div class="center-flex margin-down-tiny">

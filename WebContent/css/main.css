@@ -48,6 +48,9 @@
   margin-bottom: 10px;
 }
 
+.border-blue {
+    border: 1px solid blue;
+}
 .debug {
     border: 1px solid red;
 }
@@ -63,6 +66,7 @@
 }
 .feedback:hover {
     cursor: pointer;
+    background-color: rgb(239, 242, 240);
     border: 1px solid green;
 }
 .feedback-red:hover {
