@@ -51,7 +51,7 @@
   </div>
   <%
     while(emails.next()){
-        //TO DO: Add datetime
+        String date_time = emails.getString("date_time");
         String subject  = emails.getString("subject");
         String senderEmail  = emails.getString("emailSender");
         String content  = emails.getString("content");
@@ -60,6 +60,13 @@
       <div class = "card-box">
         <h2><%= subject %></h2>
         <p>From: <%=senderEmail%></p>
+        <%
+    	if(date_time != null){
+    	%>
+        <p> <%=date_time %> </p>
+         <%
+    	}
+    	%>
         <p><%=content%></p>
       </div>
     <%

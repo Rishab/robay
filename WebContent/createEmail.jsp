@@ -59,8 +59,8 @@
 		return;
 			}
 			//insert in table
-			String insertStr = "INSERT INTO Email (sender, reciever, subject, content)"
-					+ " VALUES (?, ?, ?, ?)";
+			String insertStr = "INSERT INTO Email (sender, reciever, subject, content, date_time)"
+					+ " VALUES (?, ?, ?, ?, ?)";
 			PreparedStatement ps = con.prepareStatement(insertStr);
 			
 			
@@ -105,6 +105,15 @@
 			ps.setString(2, reciever_id);
 			ps.setString(3, subject);
 			ps.setString(4, content);
+			
+			java.util.Date dt = new java.util.Date();
+
+			java.text.SimpleDateFormat sdf = 
+			     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+			String currentTime = sdf.format(dt);
+			
+			ps.setString(5, currentTime);
 
 			ps.executeUpdate();
 			con.close();
