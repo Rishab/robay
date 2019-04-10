@@ -9,7 +9,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>roBay: Sign Up</title>
+<title>roBay: Create Staff Account</title>
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -134,9 +134,7 @@
 						ps.executeUpdate();
 			
 						con.close();
-			
-						session.setAttribute("name_user", newName);
-						session.setAttribute("email_addr", newEmail);
+
 				%>
 				<script>
 					alert("Staff account created.");

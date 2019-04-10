@@ -129,8 +129,6 @@
 
 			con.close();
 
-			session.setAttribute("name_user", newName);
-			session.setAttribute("email_addr", newEmail);
 	%>
 	<script>
 		alert("Account created.");

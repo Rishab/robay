@@ -10,8 +10,9 @@
 <body>
 	<%
 		String acc_type = (String) session.getAttribute("acc_type");
-		if (acc_type.equals("A")) {
+		if (acc_type.equals("A") || acc_type.equals("S")) {
 			// This assumes session is secured by the server and can't be fudged by an end user...
+			
 			%>
 			    <div class="center-text margin-up color-navy">
 			        <h2>
