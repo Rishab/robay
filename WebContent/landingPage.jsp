@@ -19,6 +19,15 @@
 				<hr>
 				<br>
 			<%
+		} else if (acc_type.equals("S")) {
+			// This assumes session is secured by the server and can't be fudged by an end user...
+			%>
+				Welcome, STAFF. Click this button to go to the staff control panel, or continue down the page to browse roBay as normal.
+				<br>
+				<button onclick="location.href='staffcontrols.jsp';" class="width-some feedback card-box-2">Staff control panel</button><br>
+				<hr>
+				<br>
+			<%
 		}
 	%>
 

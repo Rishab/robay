@@ -28,8 +28,14 @@
     align-items: center;
 }
 
+.color-blue {
+	color: blue;
+}
 .color-brown {
 	color: brown;
+}
+.color-navy {
+	color: navy;
 }
 .color-red {
 	color: red;
@@ -52,6 +58,9 @@
 .feedback-red {
 	border: 1px solid brown;
 }
+.feedback-blue {
+	border: 1px solid navy;
+}
 .feedback:hover {
     cursor: pointer;
     border: 1px solid green;
@@ -59,6 +68,10 @@
 .feedback-red:hover {
     cursor: pointer;
     border: 1px solid red;
+}
+.feedback-blue:hover {
+    cursor: pointer;
+    border: 1px solid blue;
 }
 
 .left-text {
