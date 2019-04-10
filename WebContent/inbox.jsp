@@ -44,6 +44,11 @@
       <em>Mail</em>
     </h2>
   </div>
+  <div>
+  	<a href= "composeEmail.jsp" style="text-decoration:none; color:black;">
+      <input type="submit" value="Create Email">
+    </a>
+  </div>
   <%
     while(emails.next()){
         //TO DO: Add datetime
