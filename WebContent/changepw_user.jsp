@@ -48,7 +48,7 @@
 			            	<div class="margin-down-tiny">
 			            		<em>Affect User</em>
 			            		<br>
-			                    <select>
+			                    <select name="user_id_selector" id="user_id_selector">
 			                    	<%
 			                    		//TODO query DB for all Users' emails, IDs, and names
 			                    		
