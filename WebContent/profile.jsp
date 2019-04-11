@@ -103,7 +103,7 @@
 			"FROM Auction as a "
 			+ "JOIN Robot  as r using (robot_id) "
 			+ "WHERE a.status='open' AND a.u_id=" 
-			+ 12 + " "
+			+ userID + " "
 			+ "ORDER BY a.start_time DESC";
 		String selectListingsColumns = 
 			"SELECT a.listing_name, a.max_bid_amt, a.start_time, a.end_time, r.pic_url, r.r_type "
@@ -188,7 +188,7 @@
 			<%
 		} else {
 			%>
-			<p>This user has not bidded on an item</p>
+			<p>This user is not selling an item.</p>
 			<%
 		}
 		%>
@@ -201,7 +201,7 @@
 			"FROM Auction as a "
 			+ "JOIN Robot  as r using (robot_id) "
 			+ "WHERE a.status='closed' AND a.u_id=" 
-			+ 12 + " "
+			+ userID + " "
 			+ "ORDER BY a.start_time DESC";
 		String pastListingsColumns = 
 			"SELECT a.listing_name, a.max_bid_amt, a.start_time, a.end_time, r.pic_url, r.r_type "
@@ -280,10 +280,17 @@
 				</tr>
 			<% 
 			}
-		}
+		
 			%>
 			</table>
 			</div>
+			<%
+		} else {
+			%>
+			<p>This user has not sold an item.</p>
+			<%
+		}
+		%>
 	<!-- Populate the table that displays history of bids and items bidded on -->
 	<h3>
 		<em>Bid History</em>
@@ -364,7 +371,7 @@
 			<%
 		} else {
 			%>
-			<p>This user has not bidded on an item</p>
+			<p>This user has not bidded on an item.</p>
 			<%
 		}
 		
