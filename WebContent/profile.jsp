@@ -76,7 +76,7 @@
 				<em>My Profile</em>
 				<div class="height-tiny"></div>
 				<div class="center-flex">
-        			<button onclick="location.href='landingPage.jsp';" class="width-some feedback card-box-2">
+        			<button onclick="location.href='newAuction.jsp';" class="width-some feedback card-box-2">
             			<h3 class="capitalize">Create Auction</h3>
        				</button>
        				<div class="width-tiny"></div>

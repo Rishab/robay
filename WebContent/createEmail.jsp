@@ -128,7 +128,7 @@
 	%>
 	<script>
 		alert("Something went wrong. Please try again.");
-		window.location.href = "register.jsp";
+		window.location.href = "index.jsp";
 	</script>
 	<%
 		return;
