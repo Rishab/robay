@@ -45,7 +45,7 @@
 			
 			    <div class="height-tiny"></div>
 			    <div class="center-text">
-			        <a href="admincontrols.jsp"><em>Return to Admin Controls</em></a>
+			        <a href="staffcontrols.jsp"><em>Return to Staff Controls</em></a>
 			    </div>
 			    <div class="height-some"></div>
 			    <hr>
