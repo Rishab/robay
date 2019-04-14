@@ -15,7 +15,7 @@
 <body>
 	<%
 		//Get parameters from the search bar on landing.jsp
-		//String searchParams = request.getParameter("query");
+		String searchParams = request.getParameter("query");
     String sortBy = "ASC";
     if(request.getParameter("sortBy") != null && request.getParameter("a_id")!= ""){
       sortBy = request.getParameter("sortBy");

@@ -10,7 +10,7 @@
 <body>
 	<%
 		String acc_type = (String) session.getAttribute("acc_type");
-		if (acc_type.equals("A")) {
+		if (acc_type!=null && acc_type.equals("A")) {
 			// This assumes session is secured by the server and can't be fudged by an end user...
 			%>
 				Welcome, ADMINISTRATOR. Click this button to go to the admin control panel, or continue down the page to browse roBay as normal.
@@ -25,14 +25,30 @@
 	<%
 		String name = (String) session.getAttribute("name_user");
 	%>
-	Hi
-	<%=name%>, Welcome to Robay!
+	<h1>Welcome to Robay!</h1>
 
 	<div class="navbar">
+		<div class="loginNameChange">
+		
+		<%
+		
+		String login_type= "Login";
+		if(name !=null){
+			login_type = name;
+		}
 
-		<a href="login.jsp" id="login"> Login </a>
-	
-		<a href="register.jsp" id="signup"> SignUp </a>
+		%>
+
+		<a href="login.jsp" id="login"> <%=login_type%> </a>
+		
+		</div>
+
+		<a href="register.jsp" id="signup"> Sign Up </a>
+
+		<a href="landingPage.jsp" id="logout onclick= "<% 
+				session.invalidate();
+			%>"
+		> Log Out </a>
 	</div>
 	
 	<div class="search-box">
