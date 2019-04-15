@@ -4,57 +4,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>roBay: Register Staff Account</title>
+<title>roBay: Change Staff Password</title>
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 	<%
 		String acc_type = (String) session.getAttribute("acc_type");
-		if (acc_type.equals("A")) {
+		if (acc_type.equals("A") || acc_type.equals("S")) {
 			// This assumes session is secured by the server and can't be fudged by an end user...
+			
 			%>
-			    <div class="center-text margin-up color-brown">
+			    <div class="center-text margin-up color-navy">
 			        <h2>
-			            <em>roBay</em> New Staff Account
+			            <em>roBay</em> Change Your Password (Staff/Admin)
 			        </h2>
 			    </div>
 			    <div class="height-tiny"></div>
 			
-			    <div class="center width-most width-capped-decent card-box debug">
-			        <form action="createStaff.jsp" method =  "post" class="">
+			    <div class="center width-most width-capped-decent card-box border-blue">
+			        <form action="changePwStaff.jsp" method =  "post" class="">
 			            <div class="margin-up-tiny margin-down-tiny margin-left-small">
 			                <div class="margin-down-tiny">
-			                    <em>Staff Member's Name:</em>
-			                    <br>
-			                    <input type="text" name="name" class="width-most width-capped-avg">
-			                </div>
-			                <div class="margin-down-tiny">
-			                    <em>Staff's email address</em>
-			                    <br>
-			                    <input type="email" name="email" class="width-most width-capped-avg">
-			                </div>
-			                <div class="margin-down-tiny">
-			                    <em>Staff's password</em>
+			                    <em>New password</em>
 			                    <br>
 			                    <input type="password" name="password" class="width-most width-capped-avg">
 			                </div>
 			                <div class="margin-down-tiny">
-			                    <em>Confirm staff's password</em>
+			                    <em>Confirm new password</em>
 			                    <br>
 			                    <input type="password" name="password_confirm" class="width-most width-capped-avg">
 			                </div>
-			                <em>* Note: Staff can change their password later</em>
+			                <em>* Note: make sure you remember the change!</em>
 			                <br>
 			            </div>
 			            <div class="center-flex margin-down-tiny">
-			                <input type="submit" value="Register" class="width-some width-capped-small pointer card-box-2 feedback">
+			                <input type="submit" value="Submit" class="width-some width-capped-small pointer card-box-2 feedback">
 			            </div>
 			        </form>
 			    </div>
 			
 			    <div class="height-tiny"></div>
 			    <div class="center-text">
-			        <a href="admincontrols.jsp"><em>Return to Admin Controls</em></a>
+			        <a href="staffcontrols.jsp"><em>Return to Staff Controls</em></a>
 			    </div>
 			    <div class="height-some"></div>
 			    <hr>

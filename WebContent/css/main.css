@@ -28,13 +28,29 @@
     align-items: center;
 }
 
+.color-blue {
+	color: blue;
+}
 .color-brown {
 	color: brown;
+}
+.color-navy {
+	color: navy;
 }
 .color-red {
 	color: red;
 }
 
+.earnings-table tr td {
+	border-bottom: 1px dotted brown;
+}
+.earnings-table tr:last-child {
+  margin-bottom: 10px;
+}
+
+.border-blue {
+    border: 1px solid blue;
+}
 .debug {
     border: 1px solid red;
 }
@@ -45,13 +61,25 @@
 .feedback-red {
 	border: 1px solid brown;
 }
+.feedback-blue {
+	border: 1px solid navy;
+}
 .feedback:hover {
     cursor: pointer;
+    background-color: rgb(239, 242, 240);
     border: 1px solid green;
 }
 .feedback-red:hover {
     cursor: pointer;
     border: 1px solid red;
+}
+.feedback-blue:hover {
+    cursor: pointer;
+    border: 1px solid blue;
+}
+
+.left-text {
+	text-align: left;
 }
 
 .margin-down-tiny {
@@ -78,6 +106,10 @@
 .height-tiny {
     min-height: 25px;
     height: 5vh;
+}
+
+.right-text {
+	text-align: right;
 }
 
 .width-capped-decent {
