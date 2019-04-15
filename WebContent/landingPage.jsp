@@ -37,27 +37,38 @@
 	<h1>Welcome to Robay!</h1>
 
 	<div class="navbar">
-		<div class="loginNameChange">
 		
 		<%
 		
 		String login_type= "Login";
-		if(name !=null){
+		if(name != null){
 			login_type = name;
-		}
 
 		%>
+		
+		<%="Weclome " + login_type%>
+		</br>
 
+
+		<% 
+		}else{
+		%>
+		
+		<a href="register.jsp" id="signup"> Sign Up </a>
+		<div class="loginNameChange">
+		
 		<a href="login.jsp" id="login"> <%=login_type%> </a>
 		
 		</div>
+		
+		<%
+		}
+		
+		%>
 
-		<a href="register.jsp" id="signup"> Sign Up </a>
+		
 
-		<a href="landingPage.jsp" id="logout onclick= "<% 
-				session.invalidate();
-			%>"
-		> Log Out </a>
+		<a href="index.jsp" id="logout"> Log Out </a>
 	</div>
 	
 	<div class="search-box">

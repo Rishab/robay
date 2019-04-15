@@ -12,6 +12,9 @@
         <h2>
             <em>By Group 18: Rishab Chawla, Amber Rawson, Jason Scot, Roshni Shah</em>
         </h2>
+        <%
+        session.invalidate();
+        %>
     </div>
     <div class="height-tiny"></div>
 
