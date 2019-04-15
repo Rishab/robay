@@ -19,7 +19,7 @@
     <div class="height-tiny"></div>
 
     <div class="center width-most width-capped-decent card-box">
-        <form action="createAuction.jsp" method =  "post" class="">
+        <form action="createAuction.jsp" method = "post" id="createForm">
             <div class="margin-up-tiny margin-down-tiny margin-left-small">
                 <div class="margin-down-tiny">
                     <em>Listing Name:</em>
@@ -59,7 +59,7 @@
                 <div class="margin-down-tiny">
                     <em>Description of Item:</em>
                     <br>
-                    <textarea name="description" cols="40" rows="5" maxlength="500" class="width-most width-capped-avg"></textarea>
+                    <textarea name="description" id="description" cols="40" rows="5" maxlength="500" form = "createForm" class="width-most width-capped-avg"></textarea>
                 </div>
                 <div class="margin-down-tiny">
 					<em>Robot Type:</em> </br>

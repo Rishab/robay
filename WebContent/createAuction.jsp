@@ -28,6 +28,7 @@
 			String production_year = "";
 			String mobility_level = "";
 			String pic_url = "";
+			String description = "";
 			String r_type = "";
 			String personality = "";
 			String purpose = "";
@@ -44,6 +45,7 @@
 			production_year = request.getParameter("production_year");
 			mobility_level = request.getParameter("mobility_level");
 			pic_url = request.getParameter("pic_url");
+			description = request.getParameter("description");
 			
 			r_type = request.getParameter("r_type");
 			
@@ -153,8 +155,8 @@
 			String insertStr = "";
 			
 			if(r_type.equals("personal")){
-				insertStr = "INSERT INTO Robot (production_year, mobility_level, pic_url, personality, purpose, r_type)"
-						+ " VALUES (?, ?, ?, ?, ?, 'personal')";
+				insertStr = "INSERT INTO Robot (production_year, mobility_level, pic_url, personality, purpose, r_type, description)"
+						+ " VALUES (?, ?, ?, ?, ?, 'personal', ?)";
 				ps = con.prepareStatement(insertStr);
 				
 				ps.setString(1, production_year);
@@ -162,12 +164,13 @@
 				ps.setString(3, pic_url);
 				ps.setString(4, personality);
 				ps.setString(5, purpose);
+				ps.setString(6, description);
 				
 				ps.executeUpdate();
 				
 			}else if (r_type.equals("medical")){
-				insertStr = "INSERT INTO Robot (production_year, mobility_level, pic_url, training_level, expertise, r_type)"
-						+ " VALUES (?, ?, ?, ?, ?, 'medical')";
+				insertStr = "INSERT INTO Robot (production_year, mobility_level, pic_url, training_level, expertise, r_type, description)"
+						+ " VALUES (?, ?, ?, ?, ?, 'medical', ?)";
 				ps = con.prepareStatement(insertStr);
 				
 				ps.setString(1, production_year);
@@ -175,12 +178,13 @@
 				ps.setString(3, pic_url);
 				ps.setString(4, training_level);
 				ps.setString(5, expertise);
+				ps.setString(6, description);
 				
 				ps.executeUpdate();
 				
 			}else{
-				insertStr = "INSERT INTO Robot (production_year, mobility_level, pic_url, hull_strength, tracking_level, specialty, r_type)"
-						+ " VALUES (?, ?, ?, ?, ?, ?, 'military')";
+				insertStr = "INSERT INTO Robot (production_year, mobility_level, pic_url, hull_strength, tracking_level, specialty, r_type, description)"
+						+ " VALUES (?, ?, ?, ?, ?, ?, 'military', ?)";
 				ps = con.prepareStatement(insertStr);
 				
 				ps.setString(1, production_year);
@@ -189,6 +193,7 @@
 				ps.setString(4, hull_strength);
 				ps.setString(5, tracking_level);
 				ps.setString(6, specialty);
+				ps.setString(7, description);
 				
 				ps.executeUpdate();
 			}
