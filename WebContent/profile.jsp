@@ -12,7 +12,9 @@
 		//Check to see that the user is logged in. If the user is not logged in, make them 
 		//login before they can view profile 
 		String currentUser = (String) session.getAttribute("name_user");
-		String profileUser = currentUser;
+		String profileUser = (String) request.getParameter("name_user");
+		System.out.println(currentUser);
+		System.out.println(profileUser);
 		if (currentUser == null || currentUser.equals("")) {
 	%>
 		<script>
@@ -20,11 +22,18 @@
 			window.location.href = "index.jsp";
 		</script>
 	<%
+		} else if (profileUser == null || profileUser.equals(" ")) {
+			%>
+			<script>
+				alert("An error occured while loading this user's page.");
+				window.location.href = "landingPage.jsp";
+			</script>
+	<%
+			return;
 		}
 	%>
-<%-- 	<% String name = (String) session.getAttribute("name_user"); %>
- --%>
-<title>roBay: <%-- <%=name%>'s --%> Profile
+
+<title>roBay: Profile
 </title>
 <link rel="stylesheet" href="css/main.css">
 <style>
@@ -33,7 +42,6 @@
 <body>
 	<%
 		try {
-			
 			//Try to connect to the database schema
 			String url = "jdbc:mysql://db-project.cvdxoiqfbf2x.us-east-2.rds.amazonaws.com:3306/RobayProjectSchema?zeroDateTimeBehavior=convertToNull";
 			Class.forName("com.mysql.jdbc.Driver");
@@ -48,10 +56,14 @@
 			//used to create SQL statements to query the database
 			Statement stmt = con.createStatement();
 			
+			String profileUserIDStr = (String) request.getParameter("profileUserID");
+			int profileUserID = Integer.parseInt(profileUserIDStr);
+			System.out.println("profileUserID: " + profileUserID);
+					
 			// Retrieve the email address of the current user to get the currentUser's ID
 			String currentUserEmailAddr = (String) session.getAttribute("email_addr");
 			String getCurrentUserIDQuery = 
-					"SELECT a.u_id "
+					"SELECT a.u_id, a.acc_type "
 					+ "FROM Account as a "
 					+ "WHERE a.email_addr='"
 					+ currentUserEmailAddr + "'";
@@ -59,19 +71,22 @@
 			
 			//Get the userID of the current user
 			ResultSet emailResults = stmt.executeQuery(getCurrentUserIDQuery);
-			int userID = -1;
+			
+			int viewerUserID = -1;
+			String viewerAccountType = "";
 			if (emailResults.next()) {
-				userID = emailResults.getInt("u_id");
-				System.out.println(userID);
+				viewerUserID = emailResults.getInt("u_id");
+				viewerAccountType = emailResults.getString("acc_type");
 			} else {
 				System.out.println("The user does not exist in the database");
 				return;
 			}
 			
+			
 	%>
 	<h2>
 		<%
-			if (profileUser.equals(currentUser)) {
+			if (viewerUserID == profileUserID || viewerAccountType.equals("A") || viewerAccountType.equals("S")) {
 		%>
 				<em>My Profile</em>
 				<div class="height-tiny"></div>
@@ -91,8 +106,9 @@
    				<div class="height-tiny"></div>
    		<%
 			}
+			profileUser = profileUser.replaceAll("_", " ");
 		%>
-		<em><%=currentUser%>'s Profile</em>
+		<em><%=profileUser%>'s Profile</em>
 	</h2>
 	<h3>
 		<em>Currently Selling</em>
@@ -103,7 +119,7 @@
 			"FROM Auction as a "
 			+ "JOIN Robot  as r using (robot_id) "
 			+ "WHERE a.status='open' AND a.u_id=" 
-			+ userID + " "
+			+ profileUserID + " "
 			+ "ORDER BY a.start_time DESC";
 		String selectListingsColumns = 
 			"SELECT a.listing_name, a.max_bid_amt, a.start_time, a.end_time, r.pic_url, r.r_type "
@@ -201,7 +217,7 @@
 			"FROM Auction as a "
 			+ "JOIN Robot  as r using (robot_id) "
 			+ "WHERE a.status='closed' AND a.u_id=" 
-			+ userID + " "
+			+ profileUserID + " "
 			+ "ORDER BY a.start_time DESC";
 		String pastListingsColumns = 
 			"SELECT a.listing_name, a.max_bid_amt, a.start_time, a.end_time, r.pic_url, r.r_type "
@@ -300,7 +316,7 @@
 		String bidHistory = 
 			"FROM Auction as a join Bid as b using (a_id) join Robot as r using (robot_id) "
 			+ "WHERE b.u_id=" 
-			+ userID + " "
+			+ profileUserID + " "
 			+ "ORDER BY b_date_time DESC";
 		String selectBidColumns = 
 			"SELECT a.listing_name, a.status, b.amount, b.b_date_time, r.pic_url, r.r_type "
