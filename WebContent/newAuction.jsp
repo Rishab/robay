@@ -24,7 +24,7 @@
                 <div class="margin-down-tiny">
                     <em>Listing Name:</em>
                     <br>
-                    <input type="text" name="listing_name" class="width-most width-capped-avg">
+                    <input type="text" name="listing_name" maxlength="50" class="width-most width-capped-avg">
                 </div>
                 <div class="margin-down-tiny">
                     <em>Minimum Bid Increment: </em>
@@ -54,7 +54,12 @@
                 <div class="margin-down-tiny">
                     <em>Url Of Image:</em>
                     <br>
-                    <input type="url" name="pic_url" class="width-most width-capped-avg">
+                    <input type="url" name="pic_url" maxlength="500" class="width-most width-capped-avg">
+                </div>
+                <div class="margin-down-tiny">
+                    <em>Description of Item:</em>
+                    <br>
+                    <textarea name="description" cols="40" rows="5" maxlength="500" class="width-most width-capped-avg"></textarea>
                 </div>
                 <div class="margin-down-tiny">
 					<em>Robot Type:</em> </br>
@@ -69,12 +74,12 @@
                 <div class="margin-down-tiny">
                     <em>Personality:</em>
                     <br>
-                    <input type="text" name="personality" class="width-most width-capped-avg">
+                    <input type="text" name="personality" maxlength="255" class="width-most width-capped-avg">
                 </div>
                 <div class="margin-down-tiny">
                     <em>Purpose:</em>
                     <br>
-                    <input type="text" name="purpose" class="width-most width-capped-avg">
+                    <input type="text" name="purpose" maxlength="255" class="width-most width-capped-avg">
                 </div>
                 
                 </br>
@@ -88,7 +93,7 @@
                 <div class="margin-down-tiny">
                     <em>Expertise:</em>
                     <br>
-                    <input type="text" name="expertise" class="width-most width-capped-avg">
+                    <input type="text" name="expertise" maxlength="255" class="width-most width-capped-avg">
                 </div>
                 
                 </br>
@@ -107,7 +112,7 @@
                 <div class="margin-down-tiny">
                     <em>Specialty:</em>
                     <br>
-                    <input type="text" name="specialty" class="width-most width-capped-avg">
+                    <input type="text" name="specialty" maxlength="255" class="width-most width-capped-avg">
                 </div>
             </div>
             <div class="center-flex margin-down-tiny">

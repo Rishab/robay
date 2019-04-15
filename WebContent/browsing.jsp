@@ -54,7 +54,7 @@
 			}
       Statement stmt = con.createStatement();
 
-    String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url, r.r_type, CONCAT_WS('', a.listing_name, r.production_year, r.mobility_level, r.personality, r.purpose, r.expertise, r.specialty, r.r_type) as descr ");
+    String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url, r.r_type, r.description, CONCAT_WS('', a.listing_name, r.production_year, r.mobility_level, r.personality, r.purpose, r.expertise, r.specialty, r.r_type, r.description) as descr ");
 		retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.status = 'open' ";
 		if(robotType != null && robotType != ""){
 			retrieveItems += "AND r.r_type = '";
@@ -72,7 +72,7 @@
       retrieveItems = retrieveItems.substring(0, retrieveItems.length()-3);
       retrieveItems += ")";
     }
-    retrieveItems+= "ORDER BY max_bid_amt ";
+    retrieveItems+= " ORDER BY max_bid_amt ";
     if(sortBy != null){
       retrieveItems += sortBy;
     }else{

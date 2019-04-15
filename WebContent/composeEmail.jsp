@@ -24,17 +24,17 @@
                 <div class="margin-down-tiny">
                     <em>To:</em>
                     <br>
-                    <input type="email" name="reciever" class="width-most width-capped-avg">
+                    <input type="email" name="reciever" maxlength="255" class="width-most width-capped-avg">
                 </div>
                 <div class="margin-down-tiny">
                     <em>Subject:</em>
                     <br>
-                    <input type="text" name="subject" class="width-most width-capped-avg">
+                    <input type="text" name="subject" maxlength="255" class="width-most width-capped-avg">
                 </div>
                 <div class="margin-down-tiny">
                     <em>Content:</em>
                     <br>
-                    <input type="text" name="content" class="width-most width-capped-avg">
+                    <textarea name="content" cols="40" rows="5" maxlength="5000" class="width-most width-capped-avg"></textarea>
                 </div>
             </div>
             <div class="center-flex margin-down-tiny">
