@@ -38,6 +38,7 @@
 			String hull_strength = "";
 			String tracking_level = "";
 			String specialty = "";
+			String stringCompare = "";
 			
 			listing_name = request.getParameter("listing_name");
 			min_amt = request.getParameter("max_bid_amt");
@@ -152,6 +153,8 @@
 			}
 				
 			Statement stmt = con.createStatement();
+			Statement stmt2 = con.createStatement();
+			Statement stmt3 = con.createStatement();
 			PreparedStatement ps;
 			
 			String insertStr = "";
@@ -168,6 +171,8 @@
 				ps.setString(5, purpose);
 				ps.setString(6, description);
 				
+				stringCompare += (personality + purpose + r_type + description);
+				
 				ps.executeUpdate();
 				
 			}else if (r_type.equals("medical")){
@@ -181,6 +186,8 @@
 				ps.setString(4, training_level);
 				ps.setString(5, expertise);
 				ps.setString(6, description);
+				
+				stringCompare += (expertise + r_type + description);
 				
 				ps.executeUpdate();
 				
@@ -197,6 +204,7 @@
 				ps.setString(6, specialty);
 				ps.setString(7, description);
 				
+				stringCompare += (specialty + r_type + description);
 				
 				ps.executeUpdate();
 			}
@@ -205,6 +213,8 @@
 			insertStr = "INSERT INTO Auction (u_id, start_time, end_time, listing_name, min_bid_inc, robot_id, max_bid_amt, status, min_amt)"
 					+ " VALUES (?, ?, ?, ?, ?, ?, ?, 'open', ?)";
 			ps = con.prepareStatement(insertStr);
+			
+			stringCompare += (listing_name);
 			
 			String robot_id = "";
 			String findRobotID = "SELECT max(robot_id) FROM Robot";
@@ -251,13 +261,57 @@
 			
 
 			ps.executeUpdate();
-			con.close();
 	%>
 	<script>
 		alert("Auction created.");
 		window.location.href = "profile.jsp";
 	</script>
 	<%
+		//alert all users who are interested in this item
+		stringCompare = stringCompare.toLowerCase();
+		String retrieveAlerts = ("SELECT descr, u_id FROM Alert a");
+	
+	    ResultSet alerts = stmt2.executeQuery(retrieveAlerts);
+	    
+	    while(alerts.next()){
+	        String descr = alerts.getString("descr");
+	        String alert_id  = alerts.getString("u_id");
+	        
+	       	System.out.println(stringCompare + " " + descr);
+	       	if(stringCompare.contains(descr)){
+	       		System.out.println("It contains. trying to insert.");
+	       		
+	       		insertStr = "INSERT INTO Email(content, subject, date_time, sender, reciever)"
+						+ " VALUES (?, ?, ?, ?, ?)";
+				ps = con.prepareStatement(insertStr);
+				
+				String findItemId = "SELECT max(a_id) FROM Auction";
+				
+			    ResultSet itemSet = stmt3.executeQuery(findItemId);
+			    
+			    String a_id = "";
+			    
+			    if(itemSet.next()){
+			    	a_id  = itemSet.getString("max(a_id)");
+			    } else{
+			    %>
+			    <script>
+				   alert("Issue occured getting item id, try again later.");
+				   window.location.href = "index.jsp";
+				</script>
+			    <%
+			    }
+			    
+				ps.setString(1, "The item can be found at: robay/auctionItem.jsp?a_id=" + a_id);
+				ps.setString(2, "An item relating to: " + descr + " is up for auction.");
+				ps.setString(3, currentTime);
+				ps.setString(4, "15");
+				ps.setString(5, alert_id);
+
+				ps.executeUpdate();
+	       	}
+	    }
+		con.close();
 		} catch (Exception e) {
 			System.out.println("Creation error" + e);
 	%>
