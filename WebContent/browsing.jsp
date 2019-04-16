@@ -64,14 +64,14 @@
 		retrieveItems += "GROUP BY a.a_id ";
 		String[] searchParams = {};
 		if(query != null && query != ""){
-      searchParams = query.split(" ");
-      retrieveItems += "HAVING (";
-      for(String param : searchParams){
-        retrieveItems+=" descr like \'%"+param+"%\' AND";
-      }
-      retrieveItems = retrieveItems.substring(0, retrieveItems.length()-3);
-      retrieveItems += ")";
-    }
+	      searchParams = query.split(" ");
+	      retrieveItems += "HAVING (";
+	      for(String param : searchParams){
+	        retrieveItems+=" descr like \'%"+param+"%\' AND";
+	      }
+	      retrieveItems = retrieveItems.substring(0, retrieveItems.length()-3);
+	      retrieveItems += ")";
+    	}
     retrieveItems+= " ORDER BY max_bid_amt ";
     if(sortBy != null){
       retrieveItems += sortBy;
@@ -141,10 +141,11 @@
 		if(typesAvailable.size() > 0){
 		%>
 			<select name = "robotType">
+				<option value= "" <%= (robotType.equals("")|| robotType == null)?"selected":""%>>All</option>
 			<%
 				for(String type: typesAvailable){
 			%>
-				<option value= <%=type%> <%= (type == robotType)?"selected":""%>><%=type.substring(0, 1).toUpperCase() + type.substring(1)%></option>
+				<option value= <%=type%> <%= (type.equals(robotType))?"selected":""%>><%=type.substring(0, 1).toUpperCase() + type.substring(1)%></option>
 			<%
 			}
 			%>
@@ -153,10 +154,23 @@
 		}
 		%>
     <input type="submit" value="Submit">
-  </form>
-  </br>
-		<%
-
+  	</form>
+  	</br>
+	<%
+		String alertString = "createAlert.jsp?query=";
+		if(query != null && query != ""){
+			for(String param : searchParams){
+				alertString += param;
+				alertString += "+";
+			}
+			alertString = alertString.substring(0, alertString.length()-1);
+			System.out.println(alertString);
+			%>
+			<a href= <%=alertString %> style="text-decoration:none; color:black;">
+			    <input type="submit" value=<%="\"Set Alert for: " + query.toLowerCase() + "\""%>>
+		  	</a>
+			<%
+		}
     for(int i = 0; i < numResults; i++){
       if(!items.next()){
         break;
