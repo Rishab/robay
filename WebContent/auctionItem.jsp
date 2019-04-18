@@ -205,6 +205,90 @@
     }
 			
   	%>
-  
+	
+		<!--  display auction items from last month -->
+		<%
+		try {
+
+			String url = "jdbc:mysql://db-project.cvdxoiqfbf2x.us-east-2.rds.amazonaws.com:3306/RobayProjectSchema";
+			Class.forName("com.mysql.jdbc.Driver");
+
+			Connection con = DriverManager.getConnection(url, "sqlgroup", "be_my_robae");
+			if (con != null) {
+			%>
+			<p>
+				CONNECTED!
+			</p>
+		<%
+				System.out.println("Successfully connected to the database.");
+			} else {
+			%>
+			<p>
+				DISCONNECTED
+			</p>
+			<%
+				System.out.println("Failed to connect to the database.");
+			}
+      Statement stmt = con.createStatement();
+			
+		String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url, r.r_type, r.description, a.end_time, CONCAT_WS('', a.listing_name, r.production_year, r.mobility_level, r.personality, r.purpose, r.expertise, r.specialty, r.r_type, r.description) as descr ");
+		retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.status = 'open' AND a.start_time BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE()";
+		//retrieveItems += "GROUP BY a.a_id ";
+		ResultSet items = stmt.executeQuery(retrieveItems);
+		String countItems = "SELECT count(*) FROM (";
+		countItems+= retrieveItems;
+		countItems+= ") as t1";
+		ResultSet countOfItems = stmt.executeQuery(countItems);
+		countOfItems.next();
+		int numItems = countOfItems.getInt("count(*)");
+		%>
+		<p>HERE! <%= retrieveItems%></p>
+		<p><%= retrieveItems %></p> 
+		<p>FOUND <%= numItems %> ITEMS</p>
+		
+
+		<%
+		if(numItems == 0){
+			%>
+				<p>No such items found. </p>
+			<%
+		}else{
+			int numResults= 1;
+			for(int j = 0; j < numResults; j++){
+				if(!items.next()){
+					break;
+				}else{
+					String listingName  = items.getString("listing_name");
+					//float maxBidAmt = items.getFloat("max_bid_amt");
+					//String status = items.getString("status");
+					//String picURL = items.getString("pic_url");
+					int auction_id = items.getInt("a_id");
+					if(listingName !=null){
+					%>
+
+				<p><%= listingName %></p>
+					</br>
+			<%
+					}else{
+						<p>"TEST"></p>
+					</br>
+					}
+			%>
+			<%
+					} // inner else
+ 				} // outer for
+			%>
+			<%
+			return;
+			} // outer else
+	 	} catch (Exception e) {
+			//System.out.println(e.printStackTrace());
+		%>
+		<p>
+			EXCEPTION!
+		</p>
+		<%
+		}	//end catch	
+		%>
 </body>
 </html>
