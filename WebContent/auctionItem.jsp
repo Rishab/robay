@@ -232,8 +232,8 @@
       Statement stmt = con.createStatement();
 			
 		String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url, r.r_type, r.description, a.end_time, CONCAT_WS('', a.listing_name, r.production_year, r.mobility_level, r.personality, r.purpose, r.expertise, r.specialty, r.r_type, r.description) as descr ");
-		retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.status = 'open' AND a.start_time BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE()";
-		//retrieveItems += "GROUP BY a.a_id ";
+		retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.status = 'open' AND a.start_time BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE() ";
+		retrieveItems += "GROUP BY a.a_id ";
 		ResultSet items = stmt.executeQuery(retrieveItems);
 		String countItems = "SELECT count(*) FROM (";
 		countItems+= retrieveItems;
@@ -253,34 +253,30 @@
 				<p>No such items found. </p>
 			<%
 		}else{
-			int numResults= 1;
-			for(int j = 0; j < numResults; j++){
-				if(!items.next()){
-					break;
-				}else{
+			while(items.next()){
 					String listingName  = items.getString("listing_name");
 					//float maxBidAmt = items.getFloat("max_bid_amt");
 					//String status = items.getString("status");
-					//String picURL = items.getString("pic_url");
+					String picURL = items.getString("pic_url");
 					int auction_id = items.getInt("a_id");
-					if(listingName !=null){
-					%>
-
-				<p><%= listingName %></p>
-					</br>
-			<%
-					}else{
-						<p>"TEST"></p>
-					</br>
+					if(listingName == null){
+						listingName = "NULL";
 					}
-			%>
+		 %>
+		 	<a href= <%="auctionItem.jsp?a_id="+ auction_id %> style="text-decoration:none; color:black;">
+				<div class = "card-box">
+					<h2><%= listingName %></h2>
+					<img src= <%=picURL%> alt="Robot image missing." style="max-width:200px; max-height:200px;">
+				</div>
+				</br>
+				</a>
+			
 			<%
-					} // inner else
- 				} // outer for
+					} // end while
+ 				} // end else
 			%>
 			<%
 			return;
-			} // outer else
 	 	} catch (Exception e) {
 			//System.out.println(e.printStackTrace());
 		%>
