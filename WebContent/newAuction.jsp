@@ -16,6 +16,19 @@
             <em>Create New Auction</em>
         </h2>
     </div>
+    <%
+    String name_user = (String) session.getAttribute("name_user");
+    System.out.println(name_user);
+    
+		if (name_user == null || name_user == "") {
+			%>
+			<script>
+				alert("You need to login to browse");
+				window.location.href = "index.jsp";
+			</script>
+			<%
+		}
+	%>
     <div class="height-tiny"></div>
 
     <div class="center width-most width-capped-decent card-box">
@@ -34,7 +47,7 @@
                 <div class="margin-down-tiny">
                     <em>Starting Price: </em>
                     <br>
-                    <input type="number" style = "border: 1px solid black;" name="max_bid_amt" class="width-most width-capped-avg">
+                    <input type="number" style = "border: 1px solid black;" name="min_amt" class="width-most width-capped-avg">
                 </div>
                 <div class="margin-down-tiny">
                     <em>Auction End Date & Time: "yyyy-MM-dd HH:mm:ss" </em>
