@@ -22,15 +22,7 @@
 			window.location.href = "index.jsp";
 		</script>
 	<%
-		} else if (profileUser == null || profileUser.equals(" ")) {
-			%>
-			<script>
-				alert("An error occured while loading this user's page.");
-				window.location.href = "landingPage.jsp";
-			</script>
-	<%
-			return;
-		}
+		} 
 	%>
 
 <title>roBay: Profile
@@ -55,10 +47,6 @@
 			
 			//used to create SQL statements to query the database
 			Statement stmt = con.createStatement();
-			
-			String profileUserIDStr = (String) request.getParameter("profileUserID");
-			int profileUserID = Integer.parseInt(profileUserIDStr);
-			System.out.println("profileUserID: " + profileUserID);
 					
 			// Retrieve the email address of the current user to get the currentUser's ID
 			String currentUserEmailAddr = (String) session.getAttribute("email_addr");
@@ -77,16 +65,32 @@
 			if (emailResults.next()) {
 				viewerUserID = emailResults.getInt("u_id");
 				viewerAccountType = emailResults.getString("acc_type");
+				System.out.println(viewerUserID);
+				System.out.println(viewerAccountType);
 			} else {
 				System.out.println("The user does not exist in the database");
 				return;
+			}
+			
+			int profileUserID;
+			System.out.println("Check");
+			if (profileUser == null) {
+				System.out.println("Checking");
+				profileUserID = viewerUserID;
+				profileUser = currentUser;
+			} else {
+				String profileUserIDStr = (String) request.getParameter("profileUserID");
+				profileUserID = Integer.parseInt(profileUserIDStr);
+				System.out.println("profileUserID: " + profileUserID);
 			}
 			
 			
 	%>
 	<h2>
 		<%
+			System.out.println("checking");
 			if (viewerUserID == profileUserID || viewerAccountType.equals("A") || viewerAccountType.equals("S")) {
+				System.out.println("Still checking");
 		%>
 				<em>My Profile</em>
 				<div class="height-tiny"></div>
