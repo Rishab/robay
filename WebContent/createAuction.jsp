@@ -24,7 +24,7 @@
 			String listing_name = "";
 			String min_bid_inc  = "";
 			String max_bid_amt  = "";
-			String min_amt = "";
+			String min_amt = "0";
 			String end_time = "";
 			String production_year = "";
 			String mobility_level = "";
@@ -41,9 +41,8 @@
 			String stringCompare = "";
 			
 			listing_name = request.getParameter("listing_name");
-			min_amt = request.getParameter("max_bid_amt");
+			min_amt = request.getParameter("min_amt");
 			min_bid_inc = request.getParameter("min_bid_inc");
-			max_bid_amt = request.getParameter("max_bid_amt");
 			end_time = request.getParameter("end_time");
 			production_year = request.getParameter("production_year");
 			mobility_level = request.getParameter("mobility_level");
@@ -73,7 +72,7 @@
 				<%
 			}
 			if (listing_name.equals("") || min_bid_inc.equals("") || production_year.equals("") || mobility_level.equals("") || 
-					pic_url.equals("") || r_type.equals("") || end_time.equals("") || max_bid_amt.equals("")) {
+					pic_url.equals("") || r_type.equals("") || end_time.equals("")) {
 				%>
 				<script>
 					alert("One of the general parameters was missing. Try again.");
@@ -211,7 +210,7 @@
 
 			//insert in table
 			insertStr = "INSERT INTO Auction (u_id, start_time, end_time, listing_name, min_bid_inc, robot_id, max_bid_amt, status, min_amt)"
-					+ " VALUES (?, ?, ?, ?, ?, ?, ?, 'open', ?)";
+					+ " VALUES (?, ?, ?, ?, ?, ?, "0", 'open', ?)";
 			ps = con.prepareStatement(insertStr);
 			
 			stringCompare += (listing_name);
