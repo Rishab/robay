@@ -246,9 +246,10 @@
 					//String status = items.getString("status");
 					String picURL = items.getString("pic_url");
 					int auction_id = items.getInt("a_id");
+					if(a_id != auction_id){
 					count ++;
 		 %>
-		 <a href= <%="auctionItem.jsp?a_id="+ a_id %> style="text-decoration:none; color:black;">
+		 <a href= <%="auctionItem.jsp?a_id="+ auction_id %> style="text-decoration:none; color:black;">
 				<div class = "card-box">
 					<h2><%= listingName %></h2>
 					<img src= <%=picURL%> alt="Robot image missing." style="max-width:200px; max-height:200px;">
@@ -257,6 +258,7 @@
 				</a>
 			
 			<%
+				}//end inner if 
 					} // end while
 			%>
 			<%
