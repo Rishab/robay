@@ -235,53 +235,41 @@
 		retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.status = 'open' AND a.start_time BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE() ";
 		retrieveItems += "GROUP BY a.a_id ";
 		ResultSet items = stmt.executeQuery(retrieveItems);
-		String countItems = "SELECT count(*) FROM (";
-		countItems+= retrieveItems;
-		countItems+= ") as t1";
-		ResultSet countOfItems = stmt.executeQuery(countItems);
-		countOfItems.next();
-		int numItems = countOfItems.getInt("count(*)");
+		int numItems = 5;
 		%>
 		<p>HERE! <%= retrieveItems%></p>
-		<p><%= retrieveItems %></p> 
-		<p>FOUND <%= numItems %> ITEMS</p>
-		
-
 		<%
-		if(numItems == 0){
-			%>
-				<p>No such items found. </p>
-			<%
-		}else{
-			while(items.next()){
+		int count = 0;
+			while(items.next() && count < 5){
 					String listingName  = items.getString("listing_name");
 					//float maxBidAmt = items.getFloat("max_bid_amt");
 					//String status = items.getString("status");
 					String picURL = items.getString("pic_url");
 					int auction_id = items.getInt("a_id");
-					if(listingName == null){
-						listingName = "NULL";
-					}
+					count ++;
 		 %>
-		 	<a href= <%="auctionItem.jsp?a_id="+ auction_id %> style="text-decoration:none; color:black;">
+		 <a href= <%="auctionItem.jsp?a_id="+ a_id %> style="text-decoration:none; color:black;">
 				<div class = "card-box">
 					<h2><%= listingName %></h2>
 					<img src= <%=picURL%> alt="Robot image missing." style="max-width:200px; max-height:200px;">
 				</div>
-				</br>
+			</br>
 				</a>
 			
 			<%
 					} // end while
- 				} // end else
 			%>
 			<%
 			return;
 	 	} catch (Exception e) {
 			//System.out.println(e.printStackTrace());
+			out.println("<div id=\"error\">");
+					e.printStackTrace(new java.io.PrintWriter(out));
+					 out.println("</div>");
 		%>
 		<p>
 			EXCEPTION!
+		
 		</p>
 		<%
 		}	//end catch	
