@@ -75,7 +75,7 @@
 			int profileUserID;
 			System.out.println("Check");
 			if (profileUser == null) {
-				System.out.println("Checking");
+				System.out.println(" Checking");
 				profileUserID = viewerUserID;
 				profileUser = currentUser;
 			} else {
