@@ -84,7 +84,6 @@
 			Class.forName("com.mysql.jdbc.Driver");
 
 			Connection con = DriverManager.getConnection(url, "sqlgroup", "be_my_robae");
-			con.setAutoCommit(false);
 			if (con != null) {
 				System.out.println("Successfully connected to the database.");
 			} else {
@@ -164,7 +163,6 @@
 			    	records = stmt.executeUpdate(updateStr);
 			    	
 					System.out.println("Records changed in secret bid " + records);
-					con.commit();
 					
 			    }else{
 			    	
@@ -177,7 +175,6 @@
 					if(rs.next()){
 						System.out.println(rs.getString("u_id"));
 					}
-					con.commit();
 			    }
 				
 			}
@@ -196,7 +193,6 @@
 				ps.setString(4, u_id);
 				
 				ps.executeUpdate();
-				con.commit();
 				
 				// email person who was outbid
 				if(!prev_u_id.equals("") && !prev_u_id.equals(u_id)){
@@ -211,7 +207,6 @@
 					ps.setString(5, "15");
 					
 					ps.executeUpdate();
-					con.commit();
 				}
 				
 				prev_u_id = u_id;
@@ -245,10 +240,8 @@
 		    
 		    System.out.println("Bid queue size: " + bidQueue.size());
 		    
-		    int rateLimit = 0;
 		    
-		    while(bidQueue.size() > 0 && rateLimit < 10){
-		    	rateLimit++;
+		    while(bidQueue.size() > 0){
 		    	secret_u_id = bidQueue.get(0).get(0);
 		    	secret_max_amt = bidQueue.get(0).get(1);
 		    	
@@ -270,7 +263,6 @@
 					ps.setString(2, secret_max_amt);
 					
 					ps.executeUpdate();
-					con.commit();
 					
 					//	email user that their secret bid lost
 					insertStr = "INSERT INTO Email (content, subject, date_time, sender, reciever)"
@@ -284,7 +276,6 @@
 					ps.setString(5, "15");
 					
 					ps.executeUpdate();
-					con.commit();
 					
 					bidQueue.remove(0);
 					
@@ -302,7 +293,6 @@
 					ps.setString(4, secret_u_id);
 					
 					ps.executeUpdate();
-					con.commit();
 				
 					// email person who was outbid
 					
@@ -317,7 +307,6 @@
 					ps.setString(5, "15");
 					
 					ps.executeUpdate();
-					con.commit();
 					
 					//update new highest bidder					
 					prev_u_id = secret_u_id;
