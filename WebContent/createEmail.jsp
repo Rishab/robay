@@ -33,12 +33,9 @@
 			</script>
 			<%
 		}
-
 		try {
-
 			String url = "jdbc:mysql://db-project.cvdxoiqfbf2x.us-east-2.rds.amazonaws.com:3306/RobayProjectSchema";
 			Class.forName("com.mysql.jdbc.Driver");
-
 			Connection con = DriverManager.getConnection(url, "sqlgroup", "be_my_robae");
 			if (con != null) {
 				System.out.println("Successfully connected to the database.");
@@ -47,7 +44,6 @@
 			}
 				
 			Statement stmt = con.createStatement();
-
 			if (reciever.equals("") || subject.equals("") || content.equals("")) {
 				System.out.println("One of the parameters was missing. Enter all information!");
 	%>
@@ -62,32 +58,26 @@
 			String insertStr = "INSERT INTO Email (sender, reciever, subject, content, date_time)"
 					+ " VALUES (?, ?, ?, ?, ?)";
 			PreparedStatement ps = con.prepareStatement(insertStr);
-			String sender_id = "";
-			String findUserID = "";
-			ResultSet senderIDSet;
-		    if(request.getParameter("sender")!= null && request.getParameter("sender")!= ""){
-		    	sender_id += request.getParameter("sender");
-		    } else {
-
-				findUserID = "SELECT u_id FROM Account WHERE email_addr = '";
-				findUserID += user_email;
-			    findUserID += "';";
-				
-			    senderIDSet = stmt.executeQuery(findUserID);
-			    
-			    
-			    if(senderIDSet.next()){
-			    	sender_id  = senderIDSet.getString("u_id");
-			    } else{
-			    %>
-			    <script>
-				   alert("Your email is not valid. Try again.");
-				   window.location.href = "inbox.jsp";
-				</script>
-			    <%
-			    }
+			
+			
+			String findUserID = "SELECT u_id FROM Account WHERE email_addr = '";
+			findUserID += user_email;
+		    findUserID += "';";
+			
+		    ResultSet senderIDSet = stmt.executeQuery(findUserID);
+		    
+		    String sender_id = "";
+		    
+		    if(senderIDSet.next()){
+		    	sender_id  = senderIDSet.getString("u_id");
+		    } else{
+		    %>
+		    <script>
+			   alert("Your email is not valid. Try again.");
+			   window.location.href = "inbox.jsp";
+			</script>
+		    <%
 		    }
-
 		    
 		    findUserID = "SELECT u_id FROM Account WHERE email_addr = '";
 			findUserID += reciever;
@@ -106,21 +96,17 @@
 			</script>
 		    <%
 		    }
-
 			ps.setString(1, sender_id);
 			ps.setString(2, reciever_id);
 			ps.setString(3, subject);
 			ps.setString(4, content);
 			
 			java.util.Date dt = new java.util.Date();
-
 			java.text.SimpleDateFormat sdf = 
 			     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
 			String currentTime = sdf.format(dt);
 			
 			ps.setString(5, currentTime);
-
 			ps.executeUpdate();
 			con.close();
 	%>
@@ -130,7 +116,6 @@
 	</script>
 	<%
 		} catch (Exception e) {
-			e.printStackTrace();
 			System.out.println("Creation error");
 	%>
 	<script>

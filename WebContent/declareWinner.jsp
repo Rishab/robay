@@ -21,7 +21,7 @@
 		if (name_user == null || name_user == "") {
 			%>
 			<script>
-				alert("You need to login to ask a question.");
+				alert("You need to login to declare the winner of this auction.");
 				window.location.href = "index.jsp";
 			</script>
 			<%
@@ -78,20 +78,29 @@
 					+ "WHERE u_id=" + bidderID;
 			ResultSet username = stmt.executeQuery(getUsername);
 			username.next();
+			String winnerEmail = "INSERT INTO Email (sender, reciever, subject, content, date_time)"
+					+ " VALUES (?, ?, ?, ?, ?)";
+			String subject = "Auction " + a_id + " won";
+			String content = "You have won the auction! Congratulations.";
+			PreparedStatement ps = con.prepareStatement(winnerEmail);
+			ps.setString(1, Integer.toString(auctionerID));
+			ps.setString(2, Integer.toString(bidderID));
+			ps.setString(3, subject);
+			ps.setString(4, content);
 			
-		%>
-			<p>The winner of the auction is: <a
-				href=<%="profile.jsp?profileUserID=" + bidderID + "&name_user=" + username.getString("name_user").replaceAll(" ", "_") %>>
-					<%=username.getString("name_user") %>
-			</a></p>
-			<form action="createEmail.jsp">
-				<input type="hidden" name="receiver" value=<%=bidderID%>> 
-				<input type="hidden" name="subject" value="You won the bid!">
-				<input type="hidden" name="content" value="Congratulations! You have won the bid with <%=a_id%>">
-				<input type="hidden" name="sender" value="<%=auctionerID%>">
-				<input type="submit" value="Go to inbox">
-			</form>
-		<%
+			java.util.Date dt = new java.util.Date();
+			java.text.SimpleDateFormat sdf = 
+			     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String currentTime = sdf.format(dt);
+			
+			ps.setString(5, currentTime);
+			ps.executeUpdate();
+			%>
+			<script>
+				alert("The winner of the auction is <%=username.getString("name_user").replaceAll("_", " ")%>. Redirecting you to the auction.");
+				window.location.href = "auctionItem.jsp?a_id=" + <%=a_id%>;
+			</script>
+			<% 
 		} else {
 			%>
 			<script>

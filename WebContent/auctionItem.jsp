@@ -23,9 +23,11 @@
 	</script> 
 	<% 
 	}
+	
+	//check to see that the user was directed to a valid auction. if not, take them back to the broswing page
     int a_id = -1;
     System.out.println(request.getParameter("a_id"));
-    if(request.getParameter("a_id")!= null && request.getParameter("a_id")!= ""){
+    if(request.getParameter("a_id")!= null && request.getParameter("a_id")!= "") {
       a_id = Integer.parseInt(request.getParameter("a_id"));
     } else if (a_id == -1) {
     	%>
@@ -36,6 +38,7 @@
     	<% 
     }
     
+    //try-catch block to generate the entire page
     try {
     	//Try to connect to the database Schema
     	String url="jdbc:mysql://db-project.cvdxoiqfbf2x.us-east-2.rds.amazonaws.com:3306/RobayProjectSchema";
@@ -67,13 +70,15 @@
 		if (emailResults.next()) {
 			viewerUserID = emailResults.getInt("u_id");
 			viewerAccountType = emailResults.getString("acc_type");
+			System.out.println(viewerUserID);
 		} else {
 			System.out.println("The user does not exist in the database");
 			return;
 		}
 		
+		//Prepare an SQL query to get information about the auction such as descriptions, amounts, pictures, times, etc.
 		String getAuctionInformation = 
-				"SELECT r.pic_url, r.description, a.listing_name, a.u_id, a.end_time, a.min_amt "
+				"SELECT r.pic_url, r.description, a.listing_name, a.u_id, a.end_time, a.min_amt, a.status, a.max_bid_amt "
 				+ "FROM Auction as a "
 				+ "JOIN Robot as r using (robot_id) "
 				+ "WHERE a.a_id="
@@ -82,38 +87,181 @@
 		ResultSet auctionInfo = stmt.executeQuery(getAuctionInformation);
 		auctionInfo.next();
 		
+		//find out the auction owner
+		int auctionOwner = auctionInfo.getInt("u_id");
+		
+		//get the name of the listing for this auction
+		String itemName = auctionInfo.getString("listing_name");
+				
+		//get the url for the picture of this listing
+		String pic_url = auctionInfo.getString("pic_url");
+				
+		//get the description of this listing
+		String listingDescr = auctionInfo.getString("description");
+
+		//find out how long until the page has to be refreshed because the auction ended
 		Timestamp timestampDifference = auctionInfo.getTimestamp("end_time");
 		if (timestampDifference == null) {
 				System.out.println("Auction never ends");
 		}
-/* 		DateFormat dateFormatTemp = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
- */		java.util.Date endDate = new java.util.Date(timestampDifference.getTime());
+		java.util.Date endDate = new java.util.Date(timestampDifference.getTime());
 		java.util.Date currDate = new java.util.Date();
-		/* System.out.println(dateFormatTemp.format(endDate));
-		System.out.println(dateFormatTemp.format(currDate)); */
-		long diffInMilliseconds = Math.abs(endDate.getTime() - currDate.getTime());
+	
+		//convert this difference to millisecond and set a time out for when the page should be refreshed and the winner declared
+		long diffInMilliseconds = endDate.getTime() - currDate.getTime();
 		System.out.println(diffInMilliseconds);
-		
-  %>
- 	<script>
-	 	setTimeout(function(){
-	 	   window.location.href = "declareWinner.jsp?a_id=" + <%=a_id%>;
-	 	   }, <%=diffInMilliseconds%>);
- 	</script>
-	<div>
-		<h2>
-			<em>Auction Listing: <%=auctionInfo.getString("listing_name") %></em>
-		</h2>
-	</div>
-	<img src=<%=auctionInfo.getString("pic_url")%>
-		alt="Robot image missing." class="center"
-		style="max-width: 200px; max-height: 200px;">
-	<p class="center-text"><%=auctionInfo.getString("description") %>
-	<h3>
-		<em>Item Bid History</em>
-	</h3>
-	<% 
-  	if (viewerUserID != auctionInfo.getInt("u_id")) {
+		if (diffInMilliseconds >= 0) {
+			%>
+			 	<script>
+				 	setTimeout(function(){
+				 	   window.location.href = "declareWinner.jsp?a_id=" + <%=a_id%>;
+				 	   }, <%=diffInMilliseconds%>);
+			 	</script>
+		 	<% 
+		}
+ 		String auctionStatus = auctionInfo.getString("status");
+ 		System.out.println("The status of this auction is: " + auctionStatus);
+ 		System.out.println(auctionStatus.equals("closed"));
+	 	if (auctionStatus.equals("closed")) {
+	 		String getAmountsQuery =
+					"SELECT a.min_amt, a.max_bid_amt, b.a_id, a.u_id, b.u_id "
+					+ "FROM Auction as a "
+					+ "JOIN Bid as b using (a_id) "
+					+ " WHERE a_id=" + a_id + " AND b.amount=a.max_bid_amt";
+			
+			
+			ResultSet amounts = stmt.executeQuery(getAmountsQuery);
+			amounts.next();
+			
+			if (amounts.getInt("min_amt") <= amounts.getInt("max_bid_amt")) {
+				int bidderID = amounts.getInt("b.u_id");
+				System.out.println(bidderID);
+				int auctionerID = amounts.getInt("a.u_id");
+				System.out.println(auctionerID);
+				String getUsername = 
+						"SELECT name_user "
+						+ "FROM Account as a "
+						+ "WHERE u_id=" + bidderID;
+				ResultSet username = stmt.executeQuery(getUsername);
+				username.next();
+				%>
+					<p>This auction has ended. The winner of the auction is: 
+						<a
+							href=<%="profile.jsp?profileUserID=" + bidderID + "&name_user=" + username.getString("name_user").replaceAll(" ", "_") %>>
+							<%=username.getString("name_user") %>
+						</a>
+					</p>
+				<% 
+			} else {
+				%>
+				<p>No one has won this auction.</p>
+				<%
+			}
+		}
+ 	%>
+		<div>
+			<h2>
+				<em>Auction Listing: <%=itemName %></em>
+			</h2>
+		</div>
+		<img src=<%=pic_url%>
+			alt="Robot image missing." class="center"
+			style="max-width: 200px; max-height: 200px;">
+		<p class="center-text"><%=listingDescr %>
+		<h3>
+			<em>Item Bid History</em>
+		</h3>
+   		
+   		<%
+  		//Prepare a SQL query to retrieve all the bids and names of users where the auction id is equal to a_id
+  		String currentBidHistory = 
+  			"FROM Bid as b "
+  			+ "JOIN Account as a using (u_id) "
+			+ "WHERE b.a_id="
+			+ a_id + " "
+			+ "ORDER BY b.amount DESC";
+  		String countBidHistory =
+  				"SELECT count(*) "
+  				+ currentBidHistory;
+  		String selectBidColumns = 
+  	  			"SELECT b.amount, a.name_user, a.email_addr, b.b_date_time, a.u_id, b.b_id "
+  				+ currentBidHistory;
+  		ResultSet bidResults = stmt.executeQuery(countBidHistory);
+  		bidResults.next();
+  		int numberOfBids = bidResults.getInt("count(*)");
+
+  		//if the number of bids placed on the item is greater than 0, display a table with bids for that item
+  		if (numberOfBids > 0) {
+  			%>
+		<table width="100%" border="0" cellspace="0" cellpadding="0">
+			<th>Name</th>
+			<th>Time of Bid</th>
+			<th>Amount</th>
+			<%
+	  				if (viewerAccountType.equals("A") || viewerAccountType.equals("S")) {
+	  					%>
+			<th>Delete Bid</th>
+			<%
+	  				}
+	  					%>
+			<%
+	  			bidResults = stmt.executeQuery(selectBidColumns);
+	  			
+	  			for (int i = 0; i < numberOfBids && bidResults.next(); i++) {
+	  			%>
+			<tr>
+				<td style="text-align: center; vertical-align: middle">
+					<%   					
+	  						String profileUser = bidResults.getString("name_user");
+	  						int otherUserID = bidResults.getInt("u_id");
+	  					%> <a
+					href=<%="profile.jsp?profileUserID=" + otherUserID + "&name_user=" + profileUser.replaceAll(" ", "_") %>>
+						<%=profileUser %>
+				</a>
+	
+	
+				</td>
+				<td style="text-align: center; vertical-align: middle">
+					<%
+	  						Timestamp timestamp = bidResults.getTimestamp("b_date_time");
+	  						if (timestamp == null) {
+		  						%> No Real Date <% 
+	  						} else {
+	  							DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+	  							java.util.Date date = new java.util.Date(timestamp.getTime());
+	  							String strDate = dateFormat.format(date);
+	  							%> <%=strDate %> <%
+	  						}
+	  						%>
+				</td>
+				<td style="text-align: center; vertical-align: middle"><%=bidResults.getString("amount") %>
+				</td>
+				<%
+	  				if (viewerAccountType.equals("A") || viewerAccountType.equals("S")) {
+	  			%>
+						<td style="text-align: center; vertical-align: middle">
+							<button name="deleteButton" type="button"
+								class="width-some feedback card-box-2" value="<%=viewerUserID%>"
+								onclick=<%= "location.href='deleteBid.jsp?b_id=" + bidResults.getInt("b_id") + "&a_id=" + a_id + "';" %>>Delete</button>
+						</td>
+				<%
+	  				}
+	  			%>
+			</tr>
+			<%
+	  			}
+	  		%>
+		</table>
+	<%
+  		} else {
+  	%>
+			<p>This item has no bids.</p>
+	<%
+  		}	
+  	%>
+  	
+  	<% 
+  	if ((viewerUserID != auctionOwner) && auctionStatus.equals("open")) {
   		%>
 	<h3>
 		<em>Set a Bid</em>
@@ -279,128 +427,9 @@
    			}
    		}
    		%>
-   		
-   		<%
-  		//Prepare a SQL query to retrieve all the bids and names of users where the auction id is equal to a_id
-  		String currentBidHistory = 
-  			"FROM Bid as b "
-  			+ "JOIN Account as a using (u_id) "
-			+ "WHERE b.a_id="
-			+ a_id + " "
-			+ "ORDER BY b.amount DESC";
-  		String countBidHistory =
-  				"SELECT count(*) "
-  				+ currentBidHistory;
-  		String selectBidColumns = 
-  	  			"SELECT b.amount, a.name_user, a.email_addr, b.b_date_time, a.u_id, b.b_id "
-  				+ currentBidHistory;
-  		ResultSet bidResults = stmt.executeQuery(countBidHistory);
-  		bidResults.next();
-  		int numberOfBids = bidResults.getInt("count(*)");
-
-  		//if the number of bids placed on the item is greater than 0, display a table with bids for that item
-  		if (numberOfBids > 0) {
-  			%>
-	<table width="100%" border="0" cellspace="0" cellpadding="0">
-		<th>Name</th>
-		<th>Time of Bid</th>
-		<th>Amount</th>
-		<%
-  				if (viewerAccountType.equals("A") || viewerAccountType.equals("S")) {
-  					%>
-		<th>Delete Bid</th>
-		<%
-  				}
-  					%>
-		<%
-  			bidResults = stmt.executeQuery(selectBidColumns);
-  			
-  			for (int i = 0; i < numberOfBids && bidResults.next(); i++) {
-  			%>
-		<tr>
-			<td style="text-align: center; vertical-align: middle">
-				<%   					
-  						String profileUser = bidResults.getString("name_user");
-  						int otherUserID = bidResults.getInt("u_id");
-  					%> <a
-				href=<%="profile.jsp?profileUserID=" + otherUserID + "&name_user=" + profileUser.replaceAll(" ", "_") %>>
-					<%=profileUser %>
-			</a>
-
-
-			</td>
-			<td style="text-align: center; vertical-align: middle">
-				<%
-  						Timestamp timestamp = bidResults.getTimestamp("b_date_time");
-  						if (timestamp == null) {
-	  						%> No Real Date <% 
-  						} else {
-  							DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-  							java.util.Date date = new java.util.Date(timestamp.getTime());
-  							String strDate = dateFormat.format(date);
-  							%> <%=strDate %> <%
-  						}
-  						%>
-			</td>
-			<td style="text-align: center; vertical-align: middle"><%=bidResults.getString("amount") %>
-			</td>
-			<%
-  				if (viewerAccountType.equals("A") || viewerAccountType.equals("S")) {
-  					%>
-			<td style="text-align: center; vertical-align: middle">
-				<button name="deleteButton" type="button"
-					class="width-some feedback card-box-2" value="<%=viewerUserID%>"
-					onclick=<%= "location.href='deleteBid.jsp?b_id=" + bidResults.getInt("b_id") + "&a_id=" + a_id + "';" %>>Delete</button>
-			</td>
-
-
-			<%
-  				}
-  					%>
-		</tr>
-		<%
-  			}
-  			%>
-	</table>
-	<script>
-			function deleteBid() {				
-				console.log("AHHHHH");
-  				console.log(document.deleteButton.value);
-			}
-  			</script>
-	<%
-  		} else {
-  			%>
-	<p>This item has no bids.</p>
-	<%
-  		}
-    } catch (Exception e) {
-    	e.printStackTrace();
-    	return;
-    }
-			
-  	%>
 
 	<!--  display auction items from last month -->
 	<%
-		try {
-
-			String url = "jdbc:mysql://db-project.cvdxoiqfbf2x.us-east-2.rds.amazonaws.com:3306/RobayProjectSchema";
-			Class.forName("com.mysql.jdbc.Driver");
-
-			Connection con = DriverManager.getConnection(url, "sqlgroup", "be_my_robae");
-			if (con != null) {
-			%>
-	<p>CONNECTED!</p>
-	<%
-				System.out.println("Successfully connected to the database.");
-			} else {
-			%>
-	<p>DISCONNECTED</p>
-	<%
-				System.out.println("Failed to connect to the database.");
-			}
-      Statement stmt = con.createStatement();
 			
 		String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url, r.r_type, r.description, a.end_time, CONCAT_WS('', a.listing_name, r.production_year, r.mobility_level, r.personality, r.purpose, r.expertise, r.specialty, r.r_type, r.description) as descr ");
 		retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.status = 'open' AND a.start_time BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE() ";
@@ -413,39 +442,32 @@
 		<%= retrieveItems%></p>
 	<%
 		int count = 0;
-			while(items.next() && count < 5){
-					String listingName  = items.getString("listing_name");
-					//float maxBidAmt = items.getFloat("max_bid_amt");
-					//String status = items.getString("status");
-					String picURL = items.getString("pic_url");
-					int auction_id = items.getInt("a_id");
-					if(a_id != auction_id){
-					count ++;
-		 %>
-	<a href=<%="auctionItem.jsp?a_id="+ auction_id %>
-		style="text-decoration: none; color: black;">
-		<div class="card-box">
-			<h2><%= listingName %></h2>
-			<img src=<%=picURL%> alt="Robot image missing."
-				style="max-width: 200px; max-height: 200px;">
-		</div> </br>
-	</a>
-
+		while(items.next() && count < 5){
+		String listingName  = items.getString("listing_name");
+		//float maxBidAmt = items.getFloat("max_bid_amt");
+		//String status = items.getString("status");
+		String picURL = items.getString("pic_url");
+		int auction_id = items.getInt("a_id");
+			if (a_id != auction_id ){
+				count ++;
+	%>
+			<a href=<%="auctionItem.jsp?a_id="+ auction_id %> style="text-decoration: none; color: black;">
+				<div class="card-box">
+					<h2><%= listingName %></h2>
+					<img src=<%=picURL%> alt="Robot image missing." style="max-width: 200px; max-height: 200px;">
+				</div> 
+				</br>
+			</a>
+	
 	<%
-				}//end inner if 
-					} // end while
+			}	//end inner if 
+		} // end while
 			%>
 	<%
-			return;
-	 	} catch (Exception e) {
-			//System.out.println(e.printStackTrace());
-			out.println("<div id=\"error\">");
-					e.printStackTrace(new java.io.PrintWriter(out));
-					 out.println("</div>");
-		%>
-	<p>EXCEPTION!</p>
-	<%
-		}	//end catch	
+			con.close();
+    } catch(Exception e) {
+    	e.printStackTrace();
+    }
 		%>
 </body>
 </html>
