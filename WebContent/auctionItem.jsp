@@ -17,15 +17,23 @@
 	String currentUser = (String) session.getAttribute("name_user");
 	if (currentUser == null || currentUser.equals("")) {
 		%>
-		<script>
+	<script>
 			alert("You need to login to view the details of this auction");
-			window.location.href("index.jsp");
-		</script>
+			window.location.href = "index.jsp";
+	</script> 
 	<% 
 	}
     int a_id = -1;
+    System.out.println(request.getParameter("a_id"));
     if(request.getParameter("a_id")!= null && request.getParameter("a_id")!= ""){
       a_id = Integer.parseInt(request.getParameter("a_id"));
+    } else if (a_id == -1) {
+    	%>
+    	<script>
+    			alert("You need to select a valid auction");
+    			window.location.href = "browsing.jsp";
+    	</script> 
+    	<% 
     }
     
     try {
@@ -65,7 +73,7 @@
 		}
 		
 		String getAuctionInformation = 
-				"SELECT r.pic_url, a.listing_name, a.u_id "
+				"SELECT r.pic_url, r.description, a.listing_name, a.u_id, a.end_time, a.min_amt "
 				+ "FROM Auction as a "
 				+ "JOIN Robot as r using (robot_id) "
 				+ "WHERE a.a_id="
@@ -74,41 +82,212 @@
 		ResultSet auctionInfo = stmt.executeQuery(getAuctionInformation);
 		auctionInfo.next();
 		
+		Timestamp timestampDifference = auctionInfo.getTimestamp("end_time");
+		if (timestampDifference == null) {
+				System.out.println("Auction never ends");
+		}
+/* 		DateFormat dateFormatTemp = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+ */		java.util.Date endDate = new java.util.Date(timestampDifference.getTime());
+		java.util.Date currDate = new java.util.Date();
+		/* System.out.println(dateFormatTemp.format(endDate));
+		System.out.println(dateFormatTemp.format(currDate)); */
+		long diffInMilliseconds = Math.abs(endDate.getTime() - currDate.getTime());
+		System.out.println(diffInMilliseconds);
+		
   %>
-  
-  <div>
-  	<h2>
-  		<em>Auction Listing: <%=auctionInfo.getString("listing_name") %></em>
-  	</h2>
-  </div>
-  <img src=<%=auctionInfo.getString("pic_url")%> alt="Robot image missing." class="center" style="max-width:200px; max-height:200px;">
-  <h3>
-  	<em>Item Bid History</em>
-  </h3>
-  <% 
+ 	<script>
+	 	setTimeout(function(){
+	 	   window.location.href = "declareWinner.jsp?a_id=" + <%=a_id%>;
+	 	   }, <%=diffInMilliseconds%>);
+ 	</script>
+	<div>
+		<h2>
+			<em>Auction Listing: <%=auctionInfo.getString("listing_name") %></em>
+		</h2>
+	</div>
+	<img src=<%=auctionInfo.getString("pic_url")%>
+		alt="Robot image missing." class="center"
+		style="max-width: 200px; max-height: 200px;">
+	<p class="center-text"><%=auctionInfo.getString("description") %>
+	<h3>
+		<em>Item Bid History</em>
+	</h3>
+	<% 
   	if (viewerUserID != auctionInfo.getInt("u_id")) {
   		%>
-  		<h3>
-  			<em>Set a Bid</em>
-  		</h3>
-  		<form action="addBid.jsp?a_id=<%=a_id%>">
-  	  		Enter an amount:<br>
-  	  		<input type="text" name="firstname">
-  	  		<br>
-  	  		<input type="submit" value="Submit">
-  	  	</form>
-  		<%
-
+	<h3>
+		<em>Set a Bid</em>
+	</h3>
+	<form action="makeBid.jsp?a_id=<%=a_id%>" method="post">
+		<br> <input type="submit" value="Make A Bid">
+	</form>
+	<%
   	}
+  	
   %>
-  	<% 
+	<h3>
+		<strong>Questions</strong>
+	</h3>
+	<h3>
+		<strong>Search Questions</strong>
+	</h3>
+	<div>
+		<form action="auctionItem.jsp">
+			<input type="text" name="descr"> 
+			<input type="hidden" name="a_id" value=<%=a_id%>> 
+			<br> 
+			<input type="submit" value="Submit">
+		</form>
+	</div>
+	<h3>
+		<em>Ask a Question</em>
+	</h3>
+	<div>
+	<form action="askQuestion.jsp?a_id=<%=a_id%>">
+		<input type="hidden" name="a_id" value=<%=a_id%>> 
+		<input type="hidden" name="v_u_id" value=<%=viewerUserID%>> 
+		<input type="text" name="question"> <br> <input type="submit" value="Submit">
+	</form>
+	</div>
+	<div>
+	<h4>
+		<em>Unanswered Questions</em>
+	</h4>
+  <%
+  	String descr = request.getParameter("descr");
+  		//retrieve all the unanswered questions from the database
+   		String getUnansweredQuestions = 
+   			"FROM Answer "
+   			+ "RIGHT JOIN Question Using (q_id) "
+   			+ "WHERE answer IS null "
+   			+ "AND a_id=" + a_id;
+   		if (descr != null && descr != "") {
+			String searchQuery = " AND (question like \'%"+descr+"%\')";
+			getUnansweredQuestions += searchQuery;
+   	  	}
+  		//count of unanswered questions
+  		String countUnansweredQuestions = 
+  				"SELECT count(*) "
+  				+ getUnansweredQuestions;
+  		
+  		//result with unanswered questions and other valuable data
+  		String selectUnansweredQuestions =
+  				"SELECT q_id, question, a_id, q_u_id "
+  				+ getUnansweredQuestions;
+   		System.out.println(countUnansweredQuestions);
+   		System.out.println(selectUnansweredQuestions);
+   		//make the SQL query to retrieve all the unanswered questions
+   		ResultSet unansweredQuestionsCount = stmt.executeQuery(countUnansweredQuestions);
+   		unansweredQuestionsCount.next();
+   		int numberOfUnansweredQuestions = unansweredQuestionsCount.getInt("count(*)");
+   		if (numberOfUnansweredQuestions > 0) {
+   			System.out.println("Make a list with forms of questions");
+   			%>
+   			<li style="list-style:none">
+   			<% 
+   				ResultSet unansweredQuestions = stmt.executeQuery(selectUnansweredQuestions);
+  				for (int i = 0; i < numberOfUnansweredQuestions && unansweredQuestions.next(); i++) {
+					%>
+					<ul style="display: list-item">
+						<p><%=unansweredQuestions.getString("question")%></p>
+						<form action="answerQuestion.jsp">
+							<textarea rows="5" cols="20" name="answer" placeholder="Answer the question."></textarea>
+							<br>
+							<input type="hidden" name="a_id" value=<%=a_id%>> 
+							<input type="hidden" name="q_id" value=<%=unansweredQuestions.getInt("q_id")%>> 
+							<input type="hidden" name="v_u_id" value=<%=viewerUserID%>>
+							<input type="submit" value="Submit">
+						</form>
+					</ul>
+					<%
+  				}
+   			%>
+   			</li>
+   			<% 
+   		} else {
+   			if (descr != null && descr != "") {
+   				%>
+   				<p>The search result produced no unanswered questions</p>
+   				<%
+   			}
+   			
+   			else {
+   				%>
+   				<p>There are no unanswered questions</p>
+			<%
+   			}
+   		}
+   		%>
+   		</div>
+   		<h4>
+			<em>Answered Questions</em>
+		</h4>
+		<%
+		//retrieve all the answered questions from the database
+   		String getAnsweredQuestions = 
+   			"FROM Answer "
+   			+ "LEFT JOIN Question Using (q_id) "
+   			+ "WHERE a_id=" + a_id;
+		if (descr != null && descr != "") {
+			String searchQuery = " AND (answer like \'%"+descr+"%\' OR question like \'%"+descr+"%\')";
+			getAnsweredQuestions += searchQuery;
+   	  	}
+  		//count of unanswered questions
+  		String countAnsweredQuestions = 
+  				"SELECT count(*) "
+  				+ getAnsweredQuestions;
+  		
+  		//result with unanswered questions and other valuable data
+  		String selectAnsweredQuestions =
+  				"SELECT * "
+  				+ getAnsweredQuestions;
+   		System.out.println(countAnsweredQuestions);
+   		System.out.println(selectAnsweredQuestions);
+   		
+   		//make the SQL query to retrieve all the unanswered questions
+   		ResultSet answeredQuestionsCount = stmt.executeQuery(countAnsweredQuestions);
+   		answeredQuestionsCount.next();
+   		int numberOfAnsweredQuestions = answeredQuestionsCount.getInt("count(*)");
+   		if (numberOfAnsweredQuestions > 0) {
+   			System.out.println("Make a list with forms of questions");
+   			%>
+   			<li style="list-style:none">
+   			<% 
+   				ResultSet answeredQuestions = stmt.executeQuery(selectAnsweredQuestions);
+  				for (int i = 0; i < numberOfAnsweredQuestions && answeredQuestions.next(); i++) {
+					%>
+					<ul style="display: list-item">
+						<p><%=answeredQuestions.getString("question")%></p>
+						<p><strong>Answer:</strong> <%=answeredQuestions.getString("answer") %></p>
+					</ul>
+					<%
+  				}
+   			%>
+   			</li>
+   			<% 
+   		} else {
+   			if (descr != null && descr != "") {
+   				%>
+   				<p>The search result produced no unanswered questions</p>
+   				<%
+   			}
+   			
+   			else {
+   				%>
+   				<p>There are no unanswered questions</p>
+			<%
+   			}
+   		}
+   		%>
+   		
+   		<%
   		//Prepare a SQL query to retrieve all the bids and names of users where the auction id is equal to a_id
   		String currentBidHistory = 
   			"FROM Bid as b "
   			+ "JOIN Account as a using (u_id) "
 			+ "WHERE b.a_id="
 			+ a_id + " "
-			+ "ORDER BY b.b_date_time DESC";
+			+ "ORDER BY b.amount DESC";
   		String countBidHistory =
   				"SELECT count(*) "
   				+ currentBidHistory;
@@ -122,82 +301,78 @@
   		//if the number of bids placed on the item is greater than 0, display a table with bids for that item
   		if (numberOfBids > 0) {
   			%>
-  			<table width="100%" border="0" cellspace="0" cellpadding="0">
-  				<th>Name</th>
-  				<th>Time of Bid</th>
-  				<th>Amount</th>	
-  				<%
+	<table width="100%" border="0" cellspace="0" cellpadding="0">
+		<th>Name</th>
+		<th>Time of Bid</th>
+		<th>Amount</th>
+		<%
   				if (viewerAccountType.equals("A") || viewerAccountType.equals("S")) {
   					%>
-  					<th>Delete Bid</th>	
- 					<%
+		<th>Delete Bid</th>
+		<%
   				}
   					%>
-  			<%
+		<%
   			bidResults = stmt.executeQuery(selectBidColumns);
   			
   			for (int i = 0; i < numberOfBids && bidResults.next(); i++) {
   			%>
-  				<tr>
-  					<td style="text-align: center; vertical-align: middle">
-  					<%   					
+		<tr>
+			<td style="text-align: center; vertical-align: middle">
+				<%   					
   						String profileUser = bidResults.getString("name_user");
   						int otherUserID = bidResults.getInt("u_id");
-  					%>
-  					
-   							<a href=<%="profile.jsp?profileUserID=" + otherUserID + "&name_user=" + profileUser.replaceAll(" ", "_") %>>
-   								<%=profileUser %>
-   							</a>  							
-  							
-  						
-  					</td>
-  					<td style="text-align: center; vertical-align: middle">
-  						<%
+  					%> <a
+				href=<%="profile.jsp?profileUserID=" + otherUserID + "&name_user=" + profileUser.replaceAll(" ", "_") %>>
+					<%=profileUser %>
+			</a>
+
+
+			</td>
+			<td style="text-align: center; vertical-align: middle">
+				<%
   						Timestamp timestamp = bidResults.getTimestamp("b_date_time");
   						if (timestamp == null) {
-	  						%>
-	  						No Real Date
-	  						<% 
+	  						%> No Real Date <% 
   						} else {
   							DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
   							java.util.Date date = new java.util.Date(timestamp.getTime());
   							String strDate = dateFormat.format(date);
-  							%>
-  							<%=strDate %>
-  						<%
+  							%> <%=strDate %> <%
   						}
   						%>
-  					</td>
-  					<td style="text-align: center; vertical-align: middle">
-  						 <%=bidResults.getString("amount") %>
-  					</td>
-  					<%
+			</td>
+			<td style="text-align: center; vertical-align: middle"><%=bidResults.getString("amount") %>
+			</td>
+			<%
   				if (viewerAccountType.equals("A") || viewerAccountType.equals("S")) {
   					%>
-  					<td style="text-align: center; vertical-align: middle">
-  						<button name="deleteButton" type="button" class="width-some feedback card-box-2" value="<%=viewerUserID%>" onclick=<%= "location.href='deleteBid.jsp?b_id=" + bidResults.getInt("b_id") + "&a_id=" + a_id + "';" %>>Delete</button>
-  					</td>
-  					
-  					
- 					<%
+			<td style="text-align: center; vertical-align: middle">
+				<button name="deleteButton" type="button"
+					class="width-some feedback card-box-2" value="<%=viewerUserID%>"
+					onclick=<%= "location.href='deleteBid.jsp?b_id=" + bidResults.getInt("b_id") + "&a_id=" + a_id + "';" %>>Delete</button>
+			</td>
+
+
+			<%
   				}
   					%>
-  				</tr>
-  			<%
+		</tr>
+		<%
   			}
   			%>
-  			</table>
-  			<script>
+	</table>
+	<script>
 			function deleteBid() {				
 				console.log("AHHHHH");
   				console.log(document.deleteButton.value);
 			}
   			</script>
-  			<%
+	<%
   		} else {
   			%>
-  			<p>This item has no bids.</p>
-  			<%
+	<p>This item has no bids.</p>
+	<%
   		}
     } catch (Exception e) {
     	e.printStackTrace();
@@ -205,9 +380,9 @@
     }
 			
   	%>
-	
-		<!--  display auction items from last month -->
-		<%
+
+	<!--  display auction items from last month -->
+	<%
 		try {
 
 			String url = "jdbc:mysql://db-project.cvdxoiqfbf2x.us-east-2.rds.amazonaws.com:3306/RobayProjectSchema";
@@ -216,17 +391,13 @@
 			Connection con = DriverManager.getConnection(url, "sqlgroup", "be_my_robae");
 			if (con != null) {
 			%>
-			<p>
-				CONNECTED!
-			</p>
-		<%
+	<p>CONNECTED!</p>
+	<%
 				System.out.println("Successfully connected to the database.");
 			} else {
 			%>
-			<p>
-				DISCONNECTED
-			</p>
-			<%
+	<p>DISCONNECTED</p>
+	<%
 				System.out.println("Failed to connect to the database.");
 			}
       Statement stmt = con.createStatement();
@@ -237,8 +408,10 @@
 		ResultSet items = stmt.executeQuery(retrieveItems);
 		int numItems = 5;
 		%>
-		<p>HERE! <%= retrieveItems%></p>
-		<%
+	<p>
+		HERE!
+		<%= retrieveItems%></p>
+	<%
 		int count = 0;
 			while(items.next() && count < 5){
 					String listingName  = items.getString("listing_name");
@@ -249,19 +422,20 @@
 					if(a_id != auction_id){
 					count ++;
 		 %>
-		 <a href= <%="auctionItem.jsp?a_id="+ auction_id %> style="text-decoration:none; color:black;">
-				<div class = "card-box">
-					<h2><%= listingName %></h2>
-					<img src= <%=picURL%> alt="Robot image missing." style="max-width:200px; max-height:200px;">
-				</div>
-			</br>
-				</a>
-			
-			<%
+	<a href=<%="auctionItem.jsp?a_id="+ auction_id %>
+		style="text-decoration: none; color: black;">
+		<div class="card-box">
+			<h2><%= listingName %></h2>
+			<img src=<%=picURL%> alt="Robot image missing."
+				style="max-width: 200px; max-height: 200px;">
+		</div> </br>
+	</a>
+
+	<%
 				}//end inner if 
 					} // end while
 			%>
-			<%
+	<%
 			return;
 	 	} catch (Exception e) {
 			//System.out.println(e.printStackTrace());
@@ -269,11 +443,8 @@
 					e.printStackTrace(new java.io.PrintWriter(out));
 					 out.println("</div>");
 		%>
-		<p>
-			EXCEPTION!
-		
-		</p>
-		<%
+	<p>EXCEPTION!</p>
+	<%
 		}	//end catch	
 		%>
 </body>

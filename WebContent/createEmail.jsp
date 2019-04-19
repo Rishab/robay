@@ -62,26 +62,32 @@
 			String insertStr = "INSERT INTO Email (sender, reciever, subject, content, date_time)"
 					+ " VALUES (?, ?, ?, ?, ?)";
 			PreparedStatement ps = con.prepareStatement(insertStr);
-			
-			
-			String findUserID = "SELECT u_id FROM Account WHERE email_addr = '";
-			findUserID += user_email;
-		    findUserID += "';";
-			
-		    ResultSet senderIDSet = stmt.executeQuery(findUserID);
-		    
-		    String sender_id = "";
-		    
-		    if(senderIDSet.next()){
-		    	sender_id  = senderIDSet.getString("u_id");
-		    } else{
-		    %>
-		    <script>
-			   alert("Your email is not valid. Try again.");
-			   window.location.href = "inbox.jsp";
-			</script>
-		    <%
+			String sender_id = "";
+			String findUserID = "";
+			ResultSet senderIDSet;
+		    if(request.getParameter("sender")!= null && request.getParameter("sender")!= ""){
+		    	sender_id += request.getParameter("sender");
+		    } else {
+
+				findUserID = "SELECT u_id FROM Account WHERE email_addr = '";
+				findUserID += user_email;
+			    findUserID += "';";
+				
+			    senderIDSet = stmt.executeQuery(findUserID);
+			    
+			    
+			    if(senderIDSet.next()){
+			    	sender_id  = senderIDSet.getString("u_id");
+			    } else{
+			    %>
+			    <script>
+				   alert("Your email is not valid. Try again.");
+				   window.location.href = "inbox.jsp";
+				</script>
+			    <%
+			    }
 		    }
+
 		    
 		    findUserID = "SELECT u_id FROM Account WHERE email_addr = '";
 			findUserID += reciever;
@@ -124,6 +130,7 @@
 	</script>
 	<%
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Creation error");
 	%>
 	<script>
