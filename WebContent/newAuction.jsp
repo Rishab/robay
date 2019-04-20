@@ -45,7 +45,7 @@
                     <input type="number" style = "border: 1px solid black;" name="min_bid_inc" class="width-most width-capped-avg">
                 </div>
                 <div class="margin-down-tiny">
-                    <em>Starting Price: </em>
+                    <em>Minimum Selling Price (Secret): </em>
                     <br>
                     <input type="number" style = "border: 1px solid black;" name="min_amt" class="width-most width-capped-avg">
                 </div>

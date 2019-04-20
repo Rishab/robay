@@ -210,7 +210,7 @@
 
 			//insert in table
 			insertStr = "INSERT INTO Auction (u_id, start_time, end_time, listing_name, min_bid_inc, robot_id, max_bid_amt, status, min_amt)"
-					+ " VALUES (?, ?, ?, ?, ?, ?, "0", 'open', ?)";
+					+ " VALUES (?, ?, ?, ?, ?, ?, '0', 'open', ?)";
 			ps = con.prepareStatement(insertStr);
 			
 			stringCompare += (listing_name);
@@ -255,8 +255,7 @@
 			ps.setString(4, listing_name);
 			ps.setString(5, min_bid_inc);
 			ps.setString(6, robot_id);
-			ps.setString(7, max_bid_amt);
-			ps.setString(8, min_amt);
+			ps.setString(7, min_amt);
 			
 
 			ps.executeUpdate();

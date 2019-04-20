@@ -180,7 +180,7 @@
 			}
 			
 			//put in bid
-			if (!prev_u_id.equals(u_id)){
+			if (!prev_u_id.equals(u_id) || secretBid.equals("")){
 				System.out.println("Creating a bid");
 				
 				insertStr = "INSERT INTO Bid (amount, b_date_time, a_id, u_id)"
