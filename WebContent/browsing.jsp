@@ -100,7 +100,6 @@
     ResultSet items = stmt.executeQuery(retrieveItems);
 
 		%>
-		<p><%= retrieveItems %></p>
   <div>
     <h2>
       <em>Robay Browsing</em>
