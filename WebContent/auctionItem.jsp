@@ -464,7 +464,7 @@
 		} // end while
 			%>
 	<%
-			if (viewerAccountType.equals("A") || viewerAccountType.equals("S") || (viewerUserID == auctionOwner)) {
+			if (viewerAccountType.equals("A") || viewerAccountType.equals("S")) {
 
 			%>		
 				<a href=<%="deleteAuction.jsp?a_id=" + a_id%>>
