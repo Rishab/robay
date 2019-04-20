@@ -29,8 +29,8 @@
 				</div>
 				<%
 					//Get parameters from the HTML form at the register.jsp
-					String newPass = request.getParameter("password");
-					String newPassConfirm = request.getParameter("password_confirm");
+					String newPass = request.getParameter("password").replaceAll("\'","\\\\'");
+					String newPassConfirm = request.getParameter("password_confirm").replaceAll("\'","\\\\'");
 			
 					try {
 			

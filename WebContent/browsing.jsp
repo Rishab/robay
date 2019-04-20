@@ -27,7 +27,7 @@
 		}
     String query = "";
     if(request.getParameter("query") != null && request.getParameter("query")!= ""){
-      query = request.getParameter("query");
+      query = request.getParameter("query").replaceAll("\'","\\\\'");
     }
     String sortBy = "ASC";
     if(request.getParameter("sortBy") != null && request.getParameter("a_id")!= ""){

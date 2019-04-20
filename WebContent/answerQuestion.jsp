@@ -48,10 +48,10 @@
 			
 		Statement stmt = con.createStatement();
 		
-		String answer = request.getParameter("answer");
+		String answer = request.getParameter("answer").replaceAll("\'","\\\\'");
 		String viewerUserID = request.getParameter("v_u_id");
 		String q_id = request.getParameter("q_id");
-		System.out.println("Question asked: " + answer);
+		System.out.println("Answer given: " + answer);
 		
 		String postQuestionQuery =
 				"INSERT INTO Answer (answer, a_u_id, q_id) "

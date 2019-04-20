@@ -20,7 +20,7 @@
 	</div>
 	<%
 		//Get parameters from the HTML form at the register.jsp
-		String query = request.getParameter("query");
+		String query = request.getParameter("query").replaceAll("\'","\\\\'");
 		if(query == null || query == ""){
 			%>
 			<script>

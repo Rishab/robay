@@ -51,7 +51,7 @@
 			
 		Statement stmt = con.createStatement();
 		
-		String question = request.getParameter("question");
+		String question = request.getParameter("question").replaceAll("\'","\\\\'");
 		String viewerUserID = request.getParameter("v_u_id");
 		System.out.println("Question asked: " + question);
 		

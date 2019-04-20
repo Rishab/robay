@@ -20,9 +20,9 @@
 	</div>
 	<%
 		//Get parameters from the HTML form at the register.jsp
-		String reciever = request.getParameter("reciever");
-		String subject = request.getParameter("subject");
-		String content = request.getParameter("content");
+		String reciever = request.getParameter("reciever").replaceAll("\'","\\\\'");
+		String subject = request.getParameter("subject").replaceAll("\'","\\\\'");
+		String content = request.getParameter("content").replaceAll("\'","\\\\'");
 		
 		String user_email = (String) session.getAttribute("email_addr");
 		if (user_email == null || user_email == "") {

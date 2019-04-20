@@ -40,26 +40,26 @@
 			String specialty = "";
 			String stringCompare = "";
 			
-			listing_name = request.getParameter("listing_name");
+			listing_name = request.getParameter("listing_name").replaceAll("\'","\\\\'");
 			min_amt = request.getParameter("min_amt");
 			min_bid_inc = request.getParameter("min_bid_inc");
 			end_time = request.getParameter("end_time");
 			production_year = request.getParameter("production_year");
 			mobility_level = request.getParameter("mobility_level");
-			pic_url = request.getParameter("pic_url");
-			description = request.getParameter("description");
+			pic_url = request.getParameter("pic_url").replaceAll("\'","\\\\'");
+			description = request.getParameter("description").replaceAll("\'","\\\\'");
 			
 			r_type = request.getParameter("r_type");
 			
-			personality = request.getParameter("personality");
-			purpose = request.getParameter("purpose");
+			personality = request.getParameter("personality").replaceAll("\'","\\\\'");
+			purpose = request.getParameter("purpose").replaceAll("\'","\\\\'");
 			
 			training_level = request.getParameter("training_level");
-			expertise = request.getParameter("expertise");
+			expertise = request.getParameter("expertise").replaceAll("\'","\\\\'");
 			
 			hull_strength = request.getParameter("hull_strength");
 			tracking_level = request.getParameter("tracking_level");
-			specialty = request.getParameter("specialty");
+			specialty = request.getParameter("specialty").replaceAll("\'","\\\\'");
 			
 			
 			String user_email = (String) session.getAttribute("email_addr");

@@ -13,8 +13,8 @@
 </head>
 <body>
 	<%
-		String email = request.getParameter("email");
-		String password = request.getParameter("password");
+		String email = request.getParameter("email").replaceAll("\'","\\\\'");
+		String password = request.getParameter("password").replaceAll("\'","\\\\'");
 
 		try {
 			String url = "jdbc:mysql://db-project.cvdxoiqfbf2x.us-east-2.rds.amazonaws.com:3306/RobayProjectSchema";
