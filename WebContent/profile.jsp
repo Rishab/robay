@@ -12,7 +12,7 @@
 		//Check to see that the user is logged in. If the user is not logged in, make them 
 		//login before they can view profile 
 		String currentUser = (String) session.getAttribute("name_user");
-		String profileUser = (String) request.getParameter("name_user");
+		String profileUser = (String) request.getParameter("name_user").replaceAll("\'","\\\\'");
 		System.out.println(currentUser);
 		System.out.println(profileUser);
 		if (currentUser == null || currentUser.equals("")) {
