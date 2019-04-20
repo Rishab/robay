@@ -437,9 +437,6 @@
 		ResultSet items = stmt.executeQuery(retrieveItems);
 		int numItems = 5;
 		%>
-	<p>
-		HERE!
-		<%= retrieveItems%></p>
 	<%
 		int count = 0;
 		while(items.next() && count < 5){
