@@ -464,6 +464,17 @@
 		} // end while
 			%>
 	<%
+			if (viewerAccountType.equals("A") || viewerAccountType.equals("S") || (viewerUserID == auctionOwner)) {
+
+			%>		
+				<a href=<%="deleteAuction.jsp?a_id=" + a_id%>>
+					<button style="text-align: center; vertical-align: middle" name="deleteAuction" type="button"
+						class="width-some feedback card-box-2">
+						Delete Auction
+					</button>
+				</a>
+			<%
+			}
 			con.close();
     } catch(Exception e) {
     	e.printStackTrace();
