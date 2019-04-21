@@ -227,7 +227,7 @@
 			+ profileUserID + " "
 			+ "ORDER BY a.start_time DESC";
 		String pastListingsColumns = 
-			"SELECT a.listing_name, a.max_bid_amt, a.start_time, a.end_time, r.pic_url, r.r_type "
+			"SELECT a.listing_name, a.max_bid_amt, a.start_time, a.end_time, a_id, r.pic_url, r.r_type "
 			+ pastListings;
 		String countPastListingsEntries = 
 			"SELECT count(*) "
@@ -251,7 +251,7 @@
 			
 			for (int i = 0; i < numOfPastListings && pastListingsResults.next(); i++) {				
 			%>
-				<tr>
+				<tr style="cursor:pointer" onclick="window.location.href = 'auctionItem.jsp?a_id=<%=pastListingsResults.getInt("a_id") %>';">
 					<td style="text-align: center; vertical-align: middle">
 						<img src=<%=pastListingsResults.getString("pic_url")%> onerror="this.style.display='none'" style="max-width:200px; max-height:200px;">
 					</td>
@@ -326,7 +326,7 @@
 			+ profileUserID + " "
 			+ "ORDER BY b_date_time DESC";
 		String selectBidColumns = 
-			"SELECT a.listing_name, a.status, b.amount, b.b_date_time, r.pic_url, r.r_type "
+			"SELECT a.listing_name, a.status, a_id, b.amount, b.b_date_time, r.pic_url, r.r_type "
 			+ bidHistory;
 		String countBidEntries = 
 			"SELECT count(*) "
@@ -350,7 +350,7 @@
 			
 			for (int i = 0; i < numOfBids && bidResults.next(); i++) {				
 			%>
-				<tr>
+				<tr style="cursor:pointer" onclick="window.location.href = 'auctionItem.jsp?a_id=<%=bidResults.getInt("a_id") %>';">
 					<td style="text-align: center; vertical-align: middle">
 						<img src=<%=bidResults.getString("pic_url")%> alt="Robot image missing." style="max-width:200px; max-height:200px;">
 					</td>
