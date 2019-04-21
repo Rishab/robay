@@ -18,9 +18,20 @@
 			String acc_type = (String) session.getAttribute("acc_type");
 			boolean admin = false;
 			boolean staff = false;
-			%>
-				<a href="register.jsp" class="capitalize padding-right-tiny decoration-hover visited-navy color-navy">Register</a>
-			<%
+			
+			if (acc_type != null) {
+				%>
+					<script>
+						alert("You must log out before logging into a new account");
+						location.href='logOut.jsp';
+					</script>
+					<a href="register.jsp" class="capitalize padding-right-tiny decoration-hover visited-navy color-navy">Register</a>
+				<%
+			} else {
+				%>
+					<a href="register.jsp" class="capitalize padding-right-tiny decoration-hover visited-navy color-navy">Register</a>
+				<%
+			}
 			
 		%>
 	</div>

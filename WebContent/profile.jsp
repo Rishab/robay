@@ -136,7 +136,14 @@
            				<h3 class="capitalize">Check Email</h3>
         			</button>
    					<div class="width-tiny"></div>
-   					<button onclick="location.href='deleteAccount.jsp';" class="width-some feedback card-box-2">
+   					<script>
+   						function confirmDeleteAccount() {
+   							if (confirm("Really delete your account?")) {
+   							  location.href='deleteAccount.jsp';
+   							}
+   						}
+   					</script>
+   					<button onclick="confirmDeleteAccount()" class="width-some feedback card-box-2">
            				<h3 class="capitalize">Delete Account</h3>
         			</button>
    				</div>

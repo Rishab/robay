@@ -34,6 +34,10 @@
 				}
 				%>
 					<a href="logOut.jsp" class="capitalize padding-right-tiny decoration-hover visited-navy color-navy">Logout</a>
+					<script>
+						alert("You must log out before creating a new account");
+						location.href='logOut.jsp';
+					</script>
 				<%
 			}
 			

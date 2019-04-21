@@ -104,9 +104,9 @@
                     <br>
                     <textarea name="description" id="description" cols="40" rows="5" maxlength="500" form = "createForm" class="width-most width-capped-avg"></textarea>
                 </div>
-                <div class="margin-down-tiny">
+                <div onclick="checkRobots()" class="margin-down-tiny" >
 					<em>Robot Type:</em> </br>
-				    <select name="r_type" class="width-most width-capped-avg">
+				    <select id="r_type" name="r_type" class="pointer width-most width-capped-avg">
 				      <option value = "personal">Personal</option>
 				      <option value = "medical">Medical</option>
 				      <option value = "military">Military</option>
@@ -117,12 +117,12 @@
                 <div class="margin-down-tiny">
                     <em>Personality:</em>
                     <br>
-                    <input type="text" name="personality" maxlength="255" class="width-most width-capped-avg">
+                    <input id="1_per" type="text" name="personality" maxlength="255" class="width-most width-capped-avg">
                 </div>
                 <div class="margin-down-tiny">
                     <em>Purpose:</em>
                     <br>
-                    <input type="text" name="purpose" maxlength="255" class="width-most width-capped-avg">
+                    <input id="2_per" type="text" name="purpose" maxlength="255" class="width-most width-capped-avg">
                 </div>
                 
                 </br>
@@ -131,12 +131,12 @@
                 <div class="margin-down-tiny">
                     <em>Training Level:</em>
                     <br>
-                    <input type="number" style = "border: 1px solid black;" name="training_level" class="width-most width-capped-avg">
+                    <input id="1_med" type="number" style = "border: 1px solid black;" name="training_level" class="width-most width-capped-avg">
                 </div>
                 <div class="margin-down-tiny">
                     <em>Expertise:</em>
                     <br>
-                    <input type="text" name="expertise" maxlength="255" class="width-most width-capped-avg">
+                    <input id="2_med" type="text" name="expertise" maxlength="255" class="width-most width-capped-avg">
                 </div>
                 
                 </br>
@@ -145,18 +145,68 @@
                 <div class="margin-down-tiny">
                     <em>Hull Strength:</em>
                     <br>
-                    <input type="number" style = "border: 1px solid black;" name="hull_strength" class="width-most width-capped-avg">
+                    <input id="1_mil" type="number" style = "border: 1px solid black;" name="hull_strength" class="width-most width-capped-avg">
                 </div>
                 <div class="margin-down-tiny">
                     <em>Tracking Level:</em>
                     <br>
-                    <input type="number" style = "border: 1px solid black;" name="tracking_level" class="width-most width-capped-avg">
+                    <input id="2_mil" type="number" style = "border: 1px solid black;" name="tracking_level" class="width-most width-capped-avg">
                 </div>
                 <div class="margin-down-tiny">
                     <em>Specialty:</em>
                     <br>
-                    <input type="text" name="specialty" maxlength="255" class="width-most width-capped-avg">
+                    <input id="3_mil" type="text" name="specialty" maxlength="255" class="width-most width-capped-avg">
                 </div>
+                
+                <script>
+				    function checkRobots() {
+				    	var robot_type = document.getElementById('r_type').value;
+				    	
+				    	if (robot_type == "personal") {
+				    		document.getElementById('1_per').disabled = false;
+				    		document.getElementById('2_per').disabled = false;
+				    		
+				    		document.getElementById('1_med').disabled = true;
+				    		document.getElementById('2_med').disabled = true;
+				    		
+				    		document.getElementById('1_mil').disabled = true;
+				    		document.getElementById('2_mil').disabled = true;
+				    		document.getElementById('3_mil').disabled = true;
+				        } else if (robot_type == "medical"){
+				    		document.getElementById('1_per').disabled = true;
+				    		document.getElementById('2_per').disabled = true;
+				    		
+				    		document.getElementById('1_med').disabled = false;
+				    		document.getElementById('2_med').disabled = false;
+				    		
+				    		document.getElementById('1_mil').disabled = true;
+				    		document.getElementById('2_mil').disabled = true;
+				    		document.getElementById('3_mil').disabled = true;
+				    	} else if (robot_type == "military") {
+				    		document.getElementById('1_per').disabled = true;
+				    		document.getElementById('2_per').disabled = true;
+				    		
+				    		document.getElementById('1_med').disabled = true;
+				    		document.getElementById('2_med').disabled = true;
+				    		
+				    		document.getElementById('1_mil').disabled = false;
+				    		document.getElementById('2_mil').disabled = false;
+				    		document.getElementById('3_mil').disabled = false;
+				    	} else {
+				    		document.getElementById('1_per').disabled = true;
+				    		document.getElementById('2_per').disabled = true;
+				    		
+				    		document.getElementById('1_med').disabled = true;
+				    		document.getElementById('2_med').disabled = true;
+				    		
+				    		document.getElementById('1_mil').disabled = true;
+				    		document.getElementById('2_mil').disabled = true;
+				    		document.getElementById('3_mil').disabled = true;
+				    	}
+					}
+				    
+				    checkRobots();
+				</script>
             </div>
             <div class="center-flex margin-down-tiny">
                 <input type="submit" value="Send" class="width-some width-capped-small pointer card-box-2 feedback">
