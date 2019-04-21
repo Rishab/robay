@@ -110,7 +110,9 @@
 		//convert this difference to millisecond and set a time out for when the page should be refreshed and the winner declared
 		long diffInMilliseconds = endDate.getTime() - currDate.getTime();
 		System.out.println(diffInMilliseconds);
-		if (diffInMilliseconds >= 0) {
+ 		String auctionStatus = auctionInfo.getString("status");
+
+		if (diffInMilliseconds >= 0 && auctionStatus.equals("open")) {
 			%>
 			 	<script>
 				 	setTimeout(function(){
@@ -119,44 +121,56 @@
 			 	</script>
 		 	<% 
 		}
- 		String auctionStatus = auctionInfo.getString("status");
  		System.out.println("The status of this auction is: " + auctionStatus);
  		System.out.println(auctionStatus.equals("closed"));
 	 	if (auctionStatus.equals("closed")) {
 	 		String getAmountsQuery =
-					"SELECT a.min_amt, a.max_bid_amt, b.a_id, a.u_id, b.u_id "
-					+ "FROM Auction as a "
+					"FROM Auction as a "
 					+ "JOIN Bid as b using (a_id) "
 					+ " WHERE a_id=" + a_id + " AND b.amount=a.max_bid_amt";
-			
-			
-			ResultSet amounts = stmt.executeQuery(getAmountsQuery);
-			amounts.next();
-			
-			if (amounts.getInt("min_amt") <= amounts.getInt("max_bid_amt")) {
-				int bidderID = amounts.getInt("b.u_id");
-				System.out.println(bidderID);
-				int auctionerID = amounts.getInt("a.u_id");
-				System.out.println(auctionerID);
-				String getUsername = 
-						"SELECT name_user "
-						+ "FROM Account as a "
-						+ "WHERE u_id=" + bidderID;
-				ResultSet username = stmt.executeQuery(getUsername);
-				username.next();
-				%>
-					<p>This auction has ended. The winner of the auction is: 
-						<a
-							href=<%="profile.jsp?profileUserID=" + bidderID + "&name_user=" + username.getString("name_user").replaceAll(" ", "_") %>>
-							<%=username.getString("name_user") %>
-						</a>
-					</p>
-				<% 
-			} else {
+	 		String getAmountsCounts = 
+	 				"SELECT count(*) "
+	 				+ getAmountsQuery;
+	 		ResultSet count = stmt.executeQuery(getAmountsCounts);
+	 		count.next();
+	 		if (count.getInt("count(*)") > 0) {
+	 			
+		 		String getAmountsColumns = 					
+		 				"SELECT a.min_amt, a.max_bid_amt, b.a_id, a.u_id, b.u_id "
+		 				+ getAmountsQuery;
+	
+				
+		 		System.out.println(getAmountsQuery);
+				
+				ResultSet amounts = stmt.executeQuery(getAmountsQuery);
+				amounts.next();
+				System.out.println(amounts.getInt("min_amt"));
+				
+				if (amounts.getInt("min_amt") <= amounts.getInt("max_bid_amt")) {
+					int bidderID = amounts.getInt("b.u_id");
+					System.out.println(bidderID);
+					int auctionerID = amounts.getInt("a.u_id");
+					System.out.println(auctionerID);
+					String getUsername = 
+							"SELECT name_user "
+							+ "FROM Account as a "
+							+ "WHERE u_id=" + bidderID;
+					ResultSet username = stmt.executeQuery(getUsername);
+					username.next();
+					%>
+						<p>This auction has ended. The winner of the auction is: 
+							<a
+								href=<%="profile.jsp?profileUserID=" + bidderID + "&name_user=" + username.getString("name_user").replaceAll(" ", "_") %>>
+								<%=username.getString("name_user") %>
+							</a>
+						</p>
+					<% 
+				} 
+	 		} else {
 				%>
 				<p>No one has won this auction.</p>
 				<%
-			}
+	 		}
 		}
  	%>
 		<div>
