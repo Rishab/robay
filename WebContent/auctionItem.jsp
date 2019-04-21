@@ -431,11 +431,17 @@
 	<!--  display auction items from last month -->
 	<%
 			
-		String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url, r.r_type, r.description, a.end_time, CONCAT_WS('', a.listing_name, r.production_year, r.mobility_level, r.personality, r.purpose, r.expertise, r.specialty, r.r_type, r.description) as descr ");
-		retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.status = 'open' AND a.start_time BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE() ";
+		String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url, r.r_type, r.description, a.end_time ");
+		retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.start_time BETWEEN CURDATE() - INTERVAL 31 DAY AND CURDATE() ";
+		
+		//These two lines replace the one above
+		//retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.start_time BETWEEN CURDATE() - INTERVAL 31 DAY AND CURDATE()  AND r.r_type =";
+		//retrieveItems += r_type + " ";
 		retrieveItems += "GROUP BY a.a_id ";
 		ResultSet items = stmt.executeQuery(retrieveItems);
 		int numItems = 5;
+		
+		System.out.println(retrieveItems);
 		%>
 	<%
 		int count = 0;

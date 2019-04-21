@@ -203,8 +203,8 @@
 					ps.setString(1, ("You've been outbid on the following item: auctionItem.jsp?a_id=" + a_id));
 					ps.setString(2, "You've been outbid");
 					ps.setString(3, currentTime);
-					ps.setString(4, prev_u_id);
-					ps.setString(5, "15");
+					ps.setString(4, "15");
+					ps.setString(5, prev_u_id);
 					
 					ps.executeUpdate();
 				}
@@ -272,8 +272,8 @@
 					ps.setString(1, ("Your secret bid been outbid on the following item: auctionItem.jsp?a_id=" + a_id));
 					ps.setString(2, "Your secret bid has been outbid.");
 					ps.setString(3, currentTime);
-					ps.setString(4, secret_u_id);
-					ps.setString(5, "15");
+					ps.setString(4, "15");
+					ps.setString(5, secret_u_id);
 					
 					ps.executeUpdate();
 					
@@ -303,8 +303,8 @@
 					ps.setString(1, ("You've been outbid on the following item: auctionItem.jsp?a_id=" + a_id));
 					ps.setString(2, "You've been outbid");
 					ps.setString(3, currentTime);
-					ps.setString(4, prev_u_id);
-					ps.setString(5, "15");
+					ps.setString(4, "15");
+					ps.setString(5, prev_u_id);
 					
 					ps.executeUpdate();
 					
