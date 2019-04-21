@@ -7,6 +7,25 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
+<header>
+	<div class="left-float">
+		<b><em>roBay</em></b>, by Group 18
+	</div>
+	<div class="right-text">
+		<a href="index.jsp" class="capitalize padding-right-tiny decoration-hover visited-navy color-navy">Home</a>
+		
+		<%
+			String acc_type = (String) session.getAttribute("acc_type");
+			boolean admin = false;
+			boolean staff = false;
+			%>
+				<a href="register.jsp" class="capitalize padding-right-tiny decoration-hover visited-navy color-navy">Register</a>
+			<%
+			
+		%>
+	</div>
+	<hr>
+</header>
     <div class="center-text margin-up">
         <h2>
             <em>Login to roBay</em>

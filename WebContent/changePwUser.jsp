@@ -13,10 +13,38 @@
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-	<%
-		String acc_type = (String) session.getAttribute("acc_type");
+<header>
+	<div class="left-float">
+		<b><em>roBay</em></b>, by Group 18
+	</div>
+	<div class="right-text">
+		<a href="landingPage.jsp" class="capitalize padding-right-tiny decoration-hover visited-navy color-navy">Home</a>
 		
-		if (acc_type.equals("A") || acc_type.equals("S")) {
+		<%
+			String acc_type = (String) session.getAttribute("acc_type");
+			boolean admin = false;
+			boolean staff = false;
+			if (acc_type == null) {
+				%>
+					<a href="login.jsp" class="capitalize padding-right-tiny decoration-hover visited-navy color-navy">Log in</a>
+				<%
+			} else {
+				if (acc_type.equals("A")) {
+					admin = true;
+				} else if (acc_type.equals("S")) {
+					staff = true;
+				}
+				%>
+					<a href="logOut.jsp" class="capitalize padding-right-tiny decoration-hover visited-navy color-navy">Logout</a>
+				<%
+			}
+			
+		%>
+	</div>
+	<hr>
+</header>
+	<%
+		if (admin || staff) {
 			// This assumes session is secured by the server and can't be fudged by an end user...
 			
 			%>
