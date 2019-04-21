@@ -26,6 +26,10 @@
 			<%
 		}
     String query = "";
+    String includeClosed = "";
+    if(request.getParameter("include_closed") != null && request.getParameter("include_closed") != ""){
+    	includeClosed = request.getParameter("include_closed");
+    }
     if(request.getParameter("query") != null && request.getParameter("query")!= ""){
       query = request.getParameter("query").replaceAll("\'","\\\\'");
     }
@@ -55,12 +59,23 @@
       Statement stmt = con.createStatement();
 
     String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url, r.r_type, r.description, CONCAT_WS('', a.listing_name, r.production_year, r.mobility_level, r.personality, r.purpose, r.expertise, r.specialty, r.r_type, r.description) as descr ");
-		retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.status = 'open' ";
-		if(robotType != null && robotType != ""){
-			retrieveItems += "AND r.r_type = '";
-			retrieveItems += robotType;
-			retrieveItems += "' ";
+		retrieveItems += "FROM Auction a join Robot r using(robot_id) ";
+		if(!includeClosed.equals("true")){
+			retrieveItems += "WHERE a.status = 'open' ";
+			
+			if(robotType != null && robotType != ""){
+				retrieveItems += "AND r.r_type = '";
+				retrieveItems += robotType;
+				retrieveItems += "' ";
+			}
+		}else{
+			if(robotType != null && robotType != ""){
+				retrieveItems += "WHERE r.r_type = '";
+				retrieveItems += robotType;
+				retrieveItems += "' ";
+			}
 		}
+		
 		retrieveItems += "GROUP BY a.a_id ";
 		String[] searchParams = {};
 		if(query != null && query != ""){
@@ -82,6 +97,9 @@
 		String countItems = "SELECT count(*) FROM (";
 		countItems+= retrieveItems;
 		countItems+= ") as t1";
+		
+		System.out.println(countItems);
+		
 		ResultSet countOfItems = stmt.executeQuery(countItems);
 		countOfItems.next();
 		int numItems = countOfItems.getInt("count(*)");
@@ -97,8 +115,8 @@
 		}
 
 
-    ResultSet items = stmt.executeQuery(retrieveItems);
-
+    	ResultSet items = stmt.executeQuery(retrieveItems);
+		System.out.println(retrieveItems);
 		%>
   <div>
     <h2>
@@ -152,6 +170,7 @@
 		<%
 		}
 		%>
+		<em>Include closed auctions?: </em><input type="checkbox" name="include_closed" value="true" <%= includeClosed.equals("true")?"checked":"" %>>
     <input type="submit" value="Submit">
   	</form>
   	</br>
@@ -185,6 +204,7 @@
         <h2><%= listingName %></h2>
         <img src= <%=picURL%> alt="Robot image missing." style="max-width:200px; max-height:200px;">
         <p>Max Bid Amount: <%= "$" + String.format("%.2f", maxBidAmt) %></p>
+        <p>Status: <%=status %></p>
       </div>
       </br>
       </a>
@@ -198,7 +218,7 @@
       if(numResults < numItems){
 				String moreItemsLink = "browsing.jsp?numResults=" + (numResults+10>numItems?numItems:numResults+10);
 				moreItemsLink += "&sortBy=" + sortBy;
-				if(query != null && query != ""){
+				if(query != null && !query.equals("")){
 					moreItemsLink+= "&query=";
 					for(String param : searchParams){
 						moreItemsLink += param;
@@ -206,21 +226,25 @@
 					}
 					moreItemsLink = moreItemsLink.substring(0, moreItemsLink.length()-1);
 				}
-				if(robotType != null && robotType != ""){
+				if(robotType != null && !robotType.equals("")){
 					moreItemsLink+= "&robotType=";
 					moreItemsLink+= robotType;
 				}
-    %>
-    </br>
-    <a href= <%=moreItemsLink%> style="text-decoration:none; color:black;">
-      <input type="submit" value="Show More Items &raquo;">
-    </a>
-    <%
+				if(includeClosed != null && !includeClosed.equals("")){
+					moreItemsLink+= "&include_closed=true";
+				}
+			    %>
+			    </br>
+			    <a href= <%=moreItemsLink%> style="text-decoration:none; color:black;">
+			      <input type="submit" value="Show More Items &raquo;">
+			    </a>
+			    <%
       }
     %>
   <%
     return;
   } catch (Exception e) {
+	  System.out.println(e);
   %>
   <script>
     alert("Something went wrong. Please try again.");
