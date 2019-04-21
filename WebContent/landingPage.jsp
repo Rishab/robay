@@ -94,7 +94,6 @@
 		
 		<%="Weclome " + login_type%>
 		</br>
-		<a href="index.jsp" id="logout"> Log Out </a>
 		<button onclick="location.href='profile.jsp';" class="width-some feedback card-box-2">
         	<h3 class="capitalize">Profile</h3>
         </button>
