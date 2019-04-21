@@ -138,11 +138,8 @@
 		 		String getAmountsColumns = 					
 		 				"SELECT a.min_amt, a.max_bid_amt, b.a_id, a.u_id, b.u_id "
 		 				+ getAmountsQuery;
-	
-				
-		 		System.out.println(getAmountsQuery);
-				
-				ResultSet amounts = stmt.executeQuery(getAmountsQuery);
+					
+				ResultSet amounts = stmt.executeQuery(getAmountsColumns);
 				amounts.next();
 				System.out.println(amounts.getInt("min_amt"));
 				
