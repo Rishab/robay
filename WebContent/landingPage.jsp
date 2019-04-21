@@ -8,6 +8,18 @@
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
+		<style>
+				.body {
+					background-color: red;
+				}
+				.myHeader {
+				  background-color: lightblue;
+				  color: black;
+				  padding: 40px;
+				  text-align: center;
+				} 
+		
+				</style>
 	<%
 		String acc_type = (String) session.getAttribute("acc_type");
 		if (acc_type!=null && acc_type.equals("A")) {
