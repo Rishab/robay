@@ -41,6 +41,13 @@
 	color: red;
 }
 
+.decoration-hover {
+	text-decoration: none;
+}
+.decoration-hover:hover {
+	text-decoration: underline;
+}
+
 .earnings-table tr td {
 	border-bottom: 1px dotted brown;
 }
@@ -78,6 +85,12 @@
     border: 1px solid blue;
 }
 
+.left-float {
+	float: left;
+	clear: left;
+	
+	text-align: left;
+}
 .left-text {
 	text-align: left;
 }
@@ -95,6 +108,9 @@
     margin-top: 15px;
 }
 
+.padding-right-tiny {
+	padding-right: 10px;
+}
 .pointer:hover {
     cursor: pointer;
 }
@@ -110,6 +126,10 @@
 
 .right-text {
 	text-align: right;
+}
+
+.visited-navy:visited {
+	color:navy;
 }
 
 .width-capped-decent {
