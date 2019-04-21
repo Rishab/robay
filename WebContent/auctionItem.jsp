@@ -77,30 +77,19 @@
 		}
 		
 		//Prepare an SQL query to get information about the auction such as descriptions, amounts, pictures, times, etc.
-		String getAuctionInformation = 
-				"SELECT r.pic_url, r.description, a.listing_name, a.u_id, a.end_time, a.min_amt, a.status, a.max_bid_amt "
+		String getAuctionTime = 
+				"SELECT a.end_time, a.status "
 				+ "FROM Auction as a "
-				+ "JOIN Robot as r using (robot_id) "
 				+ "WHERE a.a_id="
 				+ a_id;
 		
-		ResultSet auctionInfo = stmt.executeQuery(getAuctionInformation);
-		auctionInfo.next();
+		ResultSet auctionTime = stmt.executeQuery(getAuctionTime);
+		auctionTime.next();
 		
-		//find out the auction owner
-		int auctionOwner = auctionInfo.getInt("u_id");
-		
-		//get the name of the listing for this auction
-		String itemName = auctionInfo.getString("listing_name");
-				
-		//get the url for the picture of this listing
-		String pic_url = auctionInfo.getString("pic_url");
-				
-		//get the description of this listing
-		String listingDescr = auctionInfo.getString("description");
-
+		System.out.println(getAuctionTime);
+	
 		//find out how long until the page has to be refreshed because the auction ended
-		Timestamp timestampDifference = auctionInfo.getTimestamp("end_time");
+		Timestamp timestampDifference = auctionTime.getTimestamp("end_time");
 		if (timestampDifference == null) {
 				System.out.println("Auction never ends");
 		}
@@ -110,7 +99,7 @@
 		//convert this difference to millisecond and set a time out for when the page should be refreshed and the winner declared
 		long diffInMilliseconds = endDate.getTime() - currDate.getTime();
 		System.out.println(diffInMilliseconds);
- 		String auctionStatus = auctionInfo.getString("status");
+ 		String auctionStatus = auctionTime.getString("status");
 
 		if (diffInMilliseconds >= 0 && auctionStatus.equals("open")) {
 			%>
@@ -169,6 +158,32 @@
 				<%
 	 		}
 		}
+	 	
+	 	//Prepare an SQL query to get information about the auction such as descriptions, amounts, pictures, times, etc.
+	 	String getAuctionInformation = 
+	 			"SELECT * "
+	 			+ "FROM Auction as a "
+				+ "JOIN Robot as r using (robot_id) "
+	 			+ "WHERE a.a_id="
+	 			+ a_id;
+	 			
+	 	ResultSet auctionInfo = stmt.executeQuery(getAuctionInformation);
+	 	auctionInfo.next();
+	 			
+	 	System.out.println(getAuctionInformation);
+	 			
+	 	//find out the auction owner
+	 	int auctionOwner = auctionInfo.getInt("u_id");
+	 			
+	 	//get the name of the listing for this auction
+	 	String itemName = auctionInfo.getString("listing_name");
+	 					
+	 	//get the url for the picture of this listing
+	 	String pic_url = auctionInfo.getString("pic_url");
+	 					
+	 	//get the description of this listing
+	 	String listingDescr = auctionInfo.getString("description");
+	 	
  	%>
 		<div>
 			<h2>
@@ -178,7 +193,33 @@
 		<img src=<%=pic_url%>
 			alt="Robot image missing." class="center"
 			style="max-width: 200px; max-height: 200px;">
-		<p class="center-text"><%=listingDescr %>
+		<p class="center-text"><%=listingDescr %></p>
+		<%
+			String robotType = auctionInfo.getString("r_type");
+		%>
+		<h3>
+			<em>Item Attributes</em>
+		</h3>
+		<p><strong>Robot Type: </strong><%=robotType%></p>
+		<%
+			if (robotType.equals("military")) {
+			%>
+					<p><strong>Hull Strength: </strong><%=auctionInfo.getString("hull_strength") %></p>
+					<p><strong>Tracking Level: </strong><%=auctionInfo.getString("tracking_level") %></p>
+					<p><strong>Specialty: </strong><%=auctionInfo.getString("specialty") %></p>
+				<%
+			} else if (robotType.equals("medical")) {
+				%>
+				<p><strong>Training Level: </strong><%=auctionInfo.getString("training_level") %></p>
+				<p><strong>Expertise: </strong><%=auctionInfo.getString("expertise") %></p>
+			<%
+			} else if (robotType.equals("personal")) {
+		%>
+			<p><strong>Personality: </strong><%=auctionInfo.getString("personality") %></p>
+			<p><strong>Purpose: </strong><%=auctionInfo.getString("purpose") %></p>
+		<%
+			}
+		%>
 		<h3>
 			<em>Item Bid History</em>
 		</h3>
@@ -439,20 +480,22 @@
    		}
    		%>
 
+	<h3>
+		<em>Similar Items</em>
+	</h3>
 	<!--  display auction items from last month -->
 	<%
-			
+		//Prepare a SQL query to display items that are similar to the one that the user is listing.			
 		String retrieveItems = ("SELECT a.listing_name, a.max_bid_amt, a.status, a.a_id, r.pic_url, r.r_type, r.description, a.end_time ");
-		retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.start_time BETWEEN CURDATE() - INTERVAL 31 DAY AND CURDATE() ";
-		
-		//These two lines replace the one above
-		//retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.start_time BETWEEN CURDATE() - INTERVAL 31 DAY AND CURDATE()  AND r.r_type =";
-		//retrieveItems += r_type + " ";
+		retrieveItems += "FROM Auction a join Robot r using(robot_id) WHERE a.start_time BETWEEN CURDATE() - INTERVAL 31 DAY AND CURDATE() AND r.r_type='";
+		retrieveItems += robotType + "'";
 		retrieveItems += "GROUP BY a.a_id ";
+		
+		System.out.println(retrieveItems);
+		
 		ResultSet items = stmt.executeQuery(retrieveItems);
 		int numItems = 5;
 		
-		System.out.println(retrieveItems);
 		%>
 	<%
 		int count = 0;
@@ -476,8 +519,12 @@
 	<%
 			}	//end inner if 
 		} // end while
-			%>
-	<%
+		System.out.println(count);
+		if (count == 0) {
+	%>
+			<p>There are no similar items</p>
+			<%
+		}
 			if (viewerAccountType.equals("A") || viewerAccountType.equals("S")) {
 
 			%>		
