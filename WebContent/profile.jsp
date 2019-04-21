@@ -12,7 +12,10 @@
 		//Check to see that the user is logged in. If the user is not logged in, make them 
 		//login before they can view profile 
 		String currentUser = (String) session.getAttribute("name_user");
-		String profileUser = (String) request.getParameter("name_user").replaceAll("\'","\\\\'");
+		String profileUser = (String) request.getParameter("name_user");
+		if (profileUser != null && !profileUser.equals("")) {
+			profileUser.replaceAll("\'","\\\\'");
+		}
 		System.out.println(currentUser);
 		System.out.println(profileUser);
 		if (currentUser == null || currentUser.equals("")) {
@@ -126,7 +129,7 @@
 			+ profileUserID + " "
 			+ "ORDER BY a.start_time DESC";
 		String selectListingsColumns = 
-			"SELECT a.listing_name, a.max_bid_amt, a.start_time, a.end_time, r.pic_url, r.r_type "
+			"SELECT a.listing_name, a.max_bid_amt, a.start_time, a.end_time, a_id, r.pic_url, r.r_type "
 			+ currentListings;
 		String countListingsEntries = 
 			"SELECT count(*) "
@@ -150,7 +153,7 @@
 			
 			for (int i = 0; i < numOfListings && listingsResults.next(); i++) {				
 			%>
-				<tr>
+				<tr style="cursor:pointer" onclick="window.location.href = 'auctionItem.jsp?a_id=<%=listingsResults.getInt("a_id") %>';">
 					<td style="text-align: center; vertical-align: middle">
 						<img src=<%=listingsResults.getString("pic_url")%> onerror="this.style.display='none'" style="max-width:200px; max-height:200px;">
 					</td>
