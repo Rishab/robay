@@ -68,7 +68,7 @@
 	}
 	
 	try {
-
+		
 		String url = "jdbc:mysql://db-project.cvdxoiqfbf2x.us-east-2.rds.amazonaws.com:3306/RobayProjectSchema";
 		Class.forName("com.mysql.jdbc.Driver");
 
@@ -83,36 +83,48 @@
 		
 		String closeAuction =
 				"UPDATE Auction SET status='closed' WHERE a_id=" + a_id;
+		System.out.println("Closing the auction");
 		
 		stmt.executeUpdate(closeAuction);
 		
 		String getAmountsQuery =
-				"SELECT a.min_amt, a.max_bid_amt, b.a_id, a.u_id, b.u_id "
+				"SELECT a.min_amt, a.max_bid_amt, b.a_id, a.u_id, b.u_id, a.listing_name "
 				+ "FROM Auction as a "
 				+ "JOIN Bid as b using (a_id) "
 				+ " WHERE a_id=" + a_id + " AND b.amount=a.max_bid_amt";
 		
+		System.out.println(getAmountsQuery);
 		
 		ResultSet amounts = stmt.executeQuery(getAmountsQuery);
-		amounts.next();
+		if (!amounts.next()) {
+			%>
+				<script>
+				alert("The auction has ended. No one has bidded on this auction. Redirecting you to browsing page.");
+				window.location.href = "browsing.jsp";
+				</script>
+			<%
+			return;
+		}
+		int bidderID = amounts.getInt("b.u_id");
+		int auctionerID = amounts.getInt("a.u_id");
+		int reserveAmount = amounts.getInt("a.min_amt");
+		int maxBidAmount = amounts.getInt("a.max_bid_amt");
+		String listingName = amounts.getString("a.listing_name"); 
 		
-		if (amounts.getInt("min_amt") <= amounts.getInt("max_bid_amt")) {
-			System.out.println("Email user");
-			int bidderID = amounts.getInt("b.u_id");
-			System.out.println(bidderID);
-			int auctionerID = amounts.getInt("a.u_id");
-			System.out.println(auctionerID);
-			String getUsername = 
-					"SELECT name_user "
-					+ "FROM Account as a "
-					+ "WHERE u_id=" + bidderID;
-			ResultSet username = stmt.executeQuery(getUsername);
-			username.next();
-			String winnerEmail = "INSERT INTO Email (sender, reciever, subject, content, date_time)"
-					+ " VALUES (?, ?, ?, ?, ?)";
-			String subject = "Auction " + a_id + " won";
+		//Figure out who to send the email to
+		String getUsername = 
+				"SELECT name_user "
+				+ "FROM Account as a "
+				+ "WHERE u_id=" + bidderID;
+		ResultSet username = stmt.executeQuery(getUsername);
+		username.next();
+		String email = "INSERT INTO Email (sender, reciever, subject, content, date_time)"
+				+ " VALUES (?, ?, ?, ?, ?)";
+		
+		if (reserveAmount <= maxBidAmount) {
+			String subject = "Auction " + listingName + " won";
 			String content = "You have won the auction! Congratulations.";
-			PreparedStatement ps = con.prepareStatement(winnerEmail);
+			PreparedStatement ps = con.prepareStatement(email);
 			ps.setString(1, Integer.toString(auctionerID));
 			ps.setString(2, Integer.toString(bidderID));
 			ps.setString(3, subject);
@@ -127,14 +139,29 @@
 			ps.executeUpdate();
 			%>
 			<script>
-				alert("The winner of the auction is <%=username.getString("name_user").replaceAll("_", " ")%>. Redirecting you to the auction.");
+				alert("This auction has ended. The winner of the auction is <%=username.getString("name_user").replaceAll("_", " ")%>. Redirecting you to the auction.");
 				window.location.href = "auctionItem.jsp?a_id=" + <%=a_id%>;
 			</script>
 			<% 
 		} else {
+			String subject = "Auction " + listingName + " lost";
+			String content = "You have lost the auction! You did not meet the reserve amount.";
+			PreparedStatement ps = con.prepareStatement(email);
+			ps.setString(1, Integer.toString(auctionerID));
+			ps.setString(2, Integer.toString(bidderID));
+			ps.setString(3, subject);
+			ps.setString(4, content);
+			
+			java.util.Date dt = new java.util.Date();
+			java.text.SimpleDateFormat sdf = 
+			     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String currentTime = sdf.format(dt);
+			
+			ps.setString(5, currentTime);
+			ps.executeUpdate();
 			%>
 			<script>
-				alert("No one won the auction. Redirecting you to browsing page.");
+				alert("This auction has ended. The reserve price for this auction has not been met. Redirecting you to browsing page.");
 				window.location.href = "browsing.jsp";
 			</script>
 			<%
@@ -147,3 +174,4 @@
 </body>
 
 </html>
+
