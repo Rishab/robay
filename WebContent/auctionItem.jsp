@@ -181,12 +181,12 @@
 							</a>
 						</p>
 					<% 
-				} 
-	 		} else {
-				%>
-				<p>No one has won this auction.</p>
-				<%
-	 		}
+				} else {
+					%>
+					<p>No one has won this auction.</p>
+					<%
+		 		}
+	 		} 
 		}
 	 	
 	 	//Prepare an SQL query to get information about the auction such as descriptions, amounts, pictures, times, etc.
