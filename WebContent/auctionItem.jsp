@@ -552,7 +552,7 @@
 		System.out.println(count);
 		if (count == 0) {
 	%>
-			<p>There are no similar items</p>
+			<p>There are no similar items in the past month.</p>
 			<%
 		}
 			if (viewerAccountType.equals("A") || viewerAccountType.equals("S")) {
