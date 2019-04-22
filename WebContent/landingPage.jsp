@@ -70,15 +70,20 @@
 		String name = (String) session.getAttribute("name_user");
 	%>
 	<style>
-	
+		
 		.myHeader {
 			background-color: lightblue;
 			color: black;
 			padding: 40px;
 			text-align: center;
-		} 
-
+		}
+		.welcomeLine{
+			font-size: 35px;
+			
+		}
+		 
 		</style>
+
 	<h1 class="myHeader">Welcome to Robay!</h1>
 
 	<div class="navbar">
@@ -90,8 +95,9 @@
 			login_type = name;
 
 		%>
-		<div class="welcomeLine"> 
-		<%="Welcome " + login_type%>
+		<div class="welcomeLine">
+
+		<%="Welcome " + login_type% + "!">
 
 		</div>
 
