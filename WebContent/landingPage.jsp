@@ -97,7 +97,7 @@
 		%>
 		<div class="welcomeLine">
 
-		<%="Welcome " + login_type% + "!">
+		<%="Welcome " + login_type %>
 
 		</div>
 
