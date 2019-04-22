@@ -37,18 +37,7 @@
 		%>
 	</div>
 </header>
-		<style>
-				.body {
-					background-color: red;
-				}
-				.myHeader {
-				  background-color: lightblue;
-				  color: black;
-				  padding: 40px;
-				  text-align: center;
-				} 
-		
-				</style>
+
 	<%
 		if (admin) {
 			// This assumes session is secured by the server and can't be fudged by an end user...
@@ -80,7 +69,17 @@
 	<%
 		String name = (String) session.getAttribute("name_user");
 	%>
-	<h1>Welcome to Robay!</h1>
+	<style>
+	
+		.myHeader {
+			background-color: lightblue;
+			color: black;
+			padding: 40px;
+			text-align: center;
+		} 
+
+		</style>
+	<h1 class="myHeader">Welcome to Robay!</h1>
 
 	<div class="navbar">
 		
@@ -91,15 +90,19 @@
 			login_type = name;
 
 		%>
-		
-		<%="Weclome " + login_type%>
+		<div class="welcomeLine"> 
+		<%="Welcome " + login_type%>
+
+		</div>
+
 		</br>
-		<button onclick="location.href='profile.jsp';" class="width-some feedback card-box-2">
+		<button onclick="location.href='profile.jsp';" class="width-some feedback card-box-2" >
         	<h3 class="capitalize">Profile</h3>
         </button>
 
-
 		<% 
+
+
 		}else{
 		%>
 		
@@ -118,7 +121,7 @@
 	
 	<div class="search-box">
 	<form action="browsing.jsp" method="post">
-		<input type= "search-text" name="query" placeholder="Type to search"/>
+		<input type= "search-text" name="query" placeholder="Type to search" size="150"/>
 		<input type="hidden" name="name_user" value="test"/>
 		<a class="search-btn" href="#"> </a>
 		<button id="myBtn" 
