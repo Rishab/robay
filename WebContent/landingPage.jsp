@@ -81,7 +81,10 @@
 			font-size: 35px;
 			
 		}
-		 
+		 /* .buttonProf{
+			 /* width: 800px; */
+			 /* float: center;
+		 } */ 
 		</style>
 
 	<h1 class="myHeader">Welcome to Robay!</h1>
@@ -102,10 +105,11 @@
 		</div>
 
 		</br>
+		<div class="center-flex">
 		<button onclick="location.href='profile.jsp';" class="width-some feedback card-box-2" >
         	<h3 class="capitalize">Profile</h3>
         </button>
-
+		</div>
 		<% 
 
 
@@ -125,7 +129,7 @@
 		%>
 	</div>
 	
-	<div class="search-box">
+	<div class="center-flex">
 	<form action="browsing.jsp" method="post">
 		<input type= "search-text" name="query" placeholder="Type to search" size="150"/>
 		<input type="hidden" name="name_user" value="test"/>
